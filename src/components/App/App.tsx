@@ -1,17 +1,10 @@
-import {
-  AppBar,
-  IconButton,
-  StyleRulesCallback,
-  Theme,
-  Toolbar,
-  Tooltip,
-  Typography,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
-import { Apps as AppIcon, Menu as MenuIcon, SaveAlt as SaveAltIcon, Share as ShareIcon } from '@material-ui/icons';
-import * as classNames from 'classnames';
+import { CircularProgress, Grid, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as React from 'react';
+
+import { Ledger } from '../../classes/Ledger';
+import { Transaction } from '../../classes/Transaction';
+import MainContent from '../MainContent/MainContent';
+import NavBar from '../NavBar/NavBar';
 import SideMenu from '../SideMenu/SideMenu';
 
 export interface IAppProps {
@@ -19,13 +12,21 @@ export interface IAppProps {
 }
 
 export interface IAppState {
+  loading: boolean;
   sideMenuOpen: boolean;
+  transactions: Transaction[];
 }
 
 const drawerWidth = 280;
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
-  root: {},
+  root: {
+    flexGrow: 1,
+    zIndex: 1,
+    overflow: 'hidden',
+    position: 'relative',
+    display: 'flex',
+  },
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
@@ -82,7 +83,22 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
   public state = {
-    sideMenuOpen: false
+    loading: true,
+    sideMenuOpen: false,
+    transactions: [] as Transaction[],
+  }
+
+  public componentDidMount() {
+    this.loadTransactions();
+  }
+
+  public loadTransactions = () => {
+    fetch('my_ledger.json')
+      .then(result => result.json())
+      .then((ledger: Ledger) => {
+        const { entries } = ledger;
+        this.setState({ loading: false, transactions: entries });
+    });
   }
 
   public toggleSideMenu = () => {
@@ -99,62 +115,27 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
 
   public render() {
     const { classes } = this.props;
-    const { sideMenuOpen } = this.state;
+    const { loading, sideMenuOpen, transactions } = this.state;
     return (
       <div className={classes.root}>
-        <AppBar
-          position='absolute'
-          className={classNames(classes.appBar, sideMenuOpen && classes.appBarShift)}
-        >
-          <Toolbar disableGutters={!sideMenuOpen}>
-            <IconButton
-              color='inherit'
-              aria-label='Menu'
-              onClick={this.toggleSideMenu}
-              className={classNames(classes.menuButton, sideMenuOpen && classes.hide)}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant='title' color='inherit' className={classes.flex}>
-              Teller Wallet
-            </Typography>
-            <div className={classes.action}>
-              <Tooltip title='Show Strategy List'>
-                <IconButton
-                  color='inherit'
-                  aria-label='test'
-                >
-                  <AppIcon />
-                </IconButton>
-              </Tooltip>
-            </div>
-            <div className={classes.action}>
-              <Tooltip title='Import'>
-                <IconButton
-                  color='inherit'
-                  aria-label='Import'
-                >
-                  <SaveAltIcon />
-                </IconButton>
-              </Tooltip>
-            </div>
-            <div className={classes.action}>
-              <Tooltip title='Export'>
-                <IconButton
-                  color='inherit'
-                  aria-label='Export'                
-                >
-                  <ShareIcon />
-                </IconButton>
-              </Tooltip>
-            </div>
-          </Toolbar>
-        </AppBar>
+        <NavBar
+          sideMenuOpen={sideMenuOpen}
+          toggleSideMenu={this.toggleSideMenu}
+        />
         <SideMenu
           closeMenu={this.closeSideMenu}
           open={sideMenuOpen}
           openMenu={this.openSideMenu}
         />
+        {loading === true ? (
+          <CircularProgress className={classes.loading} size={96} />
+        ) : (
+          <Grid container={true} spacing={16} className={classes.content}>
+            <MainContent
+              transactions={transactions}
+            />
+          </Grid>
+        )}
       </div>
     );
   }

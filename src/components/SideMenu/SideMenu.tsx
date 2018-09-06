@@ -4,6 +4,7 @@ import {
   IconButton,
   List,
   ListItem,
+  ListItemIcon,
   ListItemText,
   StyleRulesCallback,
   Theme,
@@ -11,7 +12,12 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
-import { ChevronLeft as ChevronLeftIcon, Home as HomeIcon, OfflineBolt as OfflineBoltIcon, PanTool as PanToolIcon } from '@material-ui/icons';
+import {
+  ChevronLeft as ChevronLeftIcon,
+  Home as HomeIcon,
+  OfflineBolt as OfflineBoltIcon,
+  PanTool as PanToolIcon,
+} from '@material-ui/icons';
 import * as classNames from 'classnames';
 import * as React from 'react';
 
@@ -25,13 +31,14 @@ export interface ISideMenuState {
   placeholder?: string;
 }
 
-const drawerWidth = 280;
+const drawerWidth = 240;
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   avatar: {
     borderRadius: 0
   },
   drawerPaper: {
+    backgroundColor: theme.palette.background.paper,
     position: 'relative',
     whiteSpace: 'nowrap',
     width: drawerWidth,
@@ -39,6 +46,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
+    overflowX: 'hidden'
   },
   drawerPaperClose: {
     overflowX: 'hidden',
@@ -50,10 +58,6 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
     [theme.breakpoints.up('sm')]: {
       width: theme.spacing.unit * 9,
     },
-  },
-  listItem: {
-    paddingLeft: theme.spacing.unit * 2,
-    paddingRight: theme.spacing.unit * 2,
   },
   selected: {
     backgroundColor: lighten(theme.palette.primary.light, 0.75),
@@ -89,22 +93,31 @@ class SideMenu extends React.Component<WithStyles<any> & ISideMenuProps, ISideMe
         <Divider />
         <List>          
           <ListItem
+            button={true}
             className={classes.listItem}                
           >
-            <HomeIcon />
-            <ListItemText primary={'Primary'} secondary={'Secondary'} />
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Overview'}/>
           </ListItem>
           <ListItem
+            button={true}
             className={classes.listItem}                
           >
-            <OfflineBoltIcon />
-            <ListItemText primary={'Primary'} secondary={'Secondary'} />
+            <ListItemIcon>
+              <OfflineBoltIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Transactions'}/>
           </ListItem>
           <ListItem
+            button={true}
             className={classes.listItem}                
           >
-            <PanToolIcon />
-            <ListItemText primary={'Primary'} secondary={'Secondary'} />
+            <ListItemIcon>
+              <PanToolIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Settings'}/>
           </ListItem>
         </List>
       </Drawer>
