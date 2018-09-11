@@ -31,7 +31,7 @@ class TransactionList extends React.Component<WithStyles<any> & ITransactionList
     const { classes, currentTransaction, handleClick, handleRequestSort, order, orderBy, transactions, userDetails } = this.props;
     return (
       <div className={classes.tableWrapper}>
-        <Table style={{ tableLayout: 'fixed' }}>
+        <Table padding='dense' style={{ tableLayout: 'fixed' }}>
           <TransactionListHeader
             order={order}
             orderBy={orderBy}

@@ -4,6 +4,7 @@ import {
   CardActions,
   CardContent,
   Checkbox,
+  Grid,
   StyleRulesCallback,
   Theme,
   Typography,
@@ -11,6 +12,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { Favorite as FavoriteIcon, FavoriteBorder as FavoriteBorderIcon } from '@material-ui/icons';
+import * as jdenticon from 'jdenticon';
 import * as React from 'react';
 
 import { Contact } from '../../classes/Contact';
@@ -32,10 +34,16 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   actions: {
     float: 'right'
   },
+  cardBody: {
+    padding: theme.spacing.unit
+  },
   cardHeader: {
     display: 'flex',
     position: 'relative',
     alignItems: 'center'
+  },
+  cardIcon: {
+    padding: theme.spacing.unit
   },
   spacer: {
     flex: '1 1 100%',
@@ -43,7 +51,6 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   cardTitle: {
     flex: '0 0 auto',
     '&:hover': {
-      textDecoration: 'underline',
       cursor: 'pointer'
     }
   },
@@ -56,12 +63,17 @@ class ContactDetails extends React.Component<WithStyles<any> & IContactDetailsPr
 
   public render() {
     const { classes, contact } = this.props;
+    // @ts-ignore
+    const svg = jdenticon.toSvg(contact.id, 48);
     return (
       <Card>
         <CardContent>
           <div className={classes.cardHeader}>
+            <div className={classes.cardIcon}>
+              <div dangerouslySetInnerHTML={{ __html: svg }} />
+            </div>
             <div className={classes.cardTitle}>
-              <Typography variant={'headline'}>
+              <Typography variant={'display1'}>
                 {getFullName(contact)}
               </Typography>
             </div>
@@ -76,9 +88,11 @@ class ContactDetails extends React.Component<WithStyles<any> & IContactDetailsPr
               />
             </div>
           </div>
-          <Typography component='p'>
-            {contact.description}
-          </Typography>
+          <Grid container={true} className={classes.cardBody}>
+            <Typography component='p'>
+              {contact.description}
+            </Typography>
+          </Grid>
         </CardContent>
         <CardActions className={classes.actions}>
           <Button size='small' color='primary'>

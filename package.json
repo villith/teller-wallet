@@ -14,9 +14,11 @@
     "classnames": "^2.2.6",
     "echarts": "^4.1.0",
     "echarts-for-react": "^2.0.14",
+    "jdenticon": "^2.1.0",
     "moment": "^2.22.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
+    "react-router-dom": "^4.3.1",
     "react-scripts-ts": "2.17.0"
   },
   "scripts": {
@@ -29,10 +31,12 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.6",
+    "@types/jdenticon": "^1.3.1",
     "@types/jest": "^23.3.1",
     "@types/node": "^10.9.4",
     "@types/react": "^16.4.13",
     "@types/react-dom": "^16.0.7",
+    "@types/react-router-dom": "^4.3.0",
     "electron": "^2.0.8",
     "foreman": "^3.0.1",
     "typescript": "^3.0.3"
