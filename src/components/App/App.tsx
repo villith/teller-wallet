@@ -1,8 +1,10 @@
 import { CircularProgress, Grid, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as React from 'react';
 
+import { Contact } from '../../classes/Contact';
 import { Ledger } from '../../classes/Ledger';
 import { Transaction } from '../../classes/Transaction';
+import { findById } from '../../helpers/get';
 import MainContent from '../MainContent/MainContent';
 import NavBar from '../NavBar/NavBar';
 import SideMenu from '../SideMenu/SideMenu';
@@ -12,9 +14,13 @@ export interface IAppProps {
 }
 
 export interface IAppState {
+  contacts: Contact[];
   loading: boolean;
   sideMenuOpen: boolean;
   transactions: Transaction[];
+  userDetails: {
+    publicKey: string;
+  }
 }
 
 const drawerWidth = 280;
@@ -31,7 +37,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
-    marginTop: theme.spacing.unit * 6
+    marginTop: theme.spacing.unit * 6,
   },
   action: {
     marginLeft: theme.spacing.unit / 4,
@@ -84,12 +90,17 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
   public state = {
     loading: true,
+    contacts: [] as Contact[],
     sideMenuOpen: false,
     transactions: [] as Transaction[],
+    userDetails: {
+      publicKey: '0412002a124dec17ce9818cb2cef659b60f3f18b00ff9600502b9861c67b6aa26c83aece4af332690efe19e84e4eeb419e9e144ad72f247b85f2c172fd49f03ee6'
+    }
   }
 
   public componentDidMount() {
     this.loadTransactions();
+    this.loadContacts();
   }
 
   public loadTransactions = () => {
@@ -98,6 +109,27 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
       .then((ledger: Ledger) => {
         const { entries } = ledger;
         this.setState({ loading: false, transactions: entries });
+    });
+  }
+
+  public loadContacts = () => {
+    fetch('contacts.json')
+      .then(result => result.json())
+      .then((contacts: Contact[]) => {
+        contacts.map(contact => {
+          const { address, title, firstName, lastName, description, notes, favorite } = contact;
+          const newContact = new Contact(
+            address,
+            firstName,
+            lastName,
+            title,
+            description,
+            notes,
+            favorite
+          );
+          return newContact;
+        });
+        this.setState({ contacts });
     });
   }
 
@@ -113,9 +145,19 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
     this.setState({ sideMenuOpen: false });
   }
 
+  public toggleContactFavorite = (id: string) => {
+    const { contacts } = this.state;
+    const index = findById(id, contacts);
+    const contact = contacts[index];
+    if (contact) {
+      contact.favorite = !contact.favorite;
+    }
+    this.setState({ contacts });
+  }
+
   public render() {
     const { classes } = this.props;
-    const { loading, sideMenuOpen, transactions } = this.state;
+    const { contacts, loading, sideMenuOpen, transactions, userDetails } = this.state;
     return (
       <div className={classes.root}>
         <NavBar
@@ -132,7 +174,10 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
         ) : (
           <Grid container={true} spacing={16} className={classes.content}>
             <MainContent
+              contacts={contacts}
               transactions={transactions}
+              userDetails={userDetails}
+              toggleContactFavorite={this.toggleContactFavorite}
             />
           </Grid>
         )}

@@ -6,12 +6,14 @@ import { Order } from './TransactionListContainer';
 import TransactionListRow from './TransactionListRow';
 
 export interface ITransactionListBodyProps {
+  currentTransaction: Transaction;
   order?: Order;
   orderBy?: string;
-  handleClick: ((event: any, id: string) => void);
-  selected: string[];
+  handleClick: (event: any, id: string) => void;
   transactions: Transaction[];
-  sortable: boolean;
+  userDetails: {
+    publicKey: string;
+  }
 }
 
 export interface ITransactionListBodyState {
@@ -23,32 +25,19 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 });
 
 class TransactionListBody extends React.Component<WithStyles<any> & ITransactionListBodyProps, ITransactionListBodyState> {
-  public getSorting = (order: Order, orderBy: string) => {
-    return order === 'desc'
-      ? (a: Transaction, b: Transaction) => (
-        b[orderBy] === a[orderBy]
-        ? a.id < b.id ? -1 : 1
-        : b[orderBy] < a[orderBy] ? -1 : 1
-      ) : (a: Transaction, b: Transaction) => (
-        a[orderBy] === b[orderBy]
-        ? a.id < b.id ? -1 : 1
-        : a[orderBy] < b[orderBy] ? -1 : 1
-      );
-  }
-
   public render() {
-    const { handleClick, transactions, selected, order, orderBy, sortable } = this.props;
-    const transactionList = sortable ? transactions.sort(this.getSorting(order!, orderBy!)) : transactions;
+    const { currentTransaction, handleClick, transactions, userDetails } = this.props;
     return (
       <TableBody>
-        {transactionList.map(transaction => {
+        {transactions.map((transaction) => {
           const { id } = transaction;
-          const isSelected = selected.indexOf(id) !== -1;
+          const isSelected = currentTransaction.id === id;
           return <TransactionListRow
             isSelected={isSelected}
             key={id}
             transaction={transaction}
             handleClick={handleClick}
+            userDetails={userDetails}
           />
         })}
       </TableBody>

@@ -6,12 +6,16 @@ import TransactionList from './TransactionList';
 import TransactionListToolbar from './TransactionListToolbar';
 
 export interface ITransactionListContainerProps {
+  handleSelectTransaction: (id: string) => void;
+  currentTransaction: Transaction;
   transactions: Transaction[];
+  userDetails: {
+    publicKey: string;
+  }
 }
 
 export interface ITransactionListContainerState {
   numSelected: number;
-  selected: string[];
   order: Order;
   orderBy: string;
 }
@@ -34,9 +38,18 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 class TransactionListContainer extends React.Component<WithStyles<any> & ITransactionListContainerProps, ITransactionListContainerState> {
   public state = {
     numSelected: 0,
-    order: 'asc' as Order,
-    orderBy: 'id',
-    selected: [] as string[]
+    order: 'desc' as Order,
+    orderBy: 'timestamp'
+  }
+
+  public componentWillMount() {
+    const { order, orderBy } = this.state;
+    const { currentTransaction, transactions, handleSelectTransaction } = this.props;
+
+    if (!currentTransaction.id) {
+      const transactionList = transactions.sort(this.getSorting(order!, orderBy!));
+      handleSelectTransaction(transactionList[0].id);
+    }
   }
 
   public handleRequestSort = (event: any, property: any) => {
@@ -50,31 +63,27 @@ class TransactionListContainer extends React.Component<WithStyles<any> & ITransa
     this.setState({ order, orderBy });
   }
 
-  public handleSelectAllClick = (event: any, checked: boolean) => {
-    if (checked) {
-      this.setState(({ selected: this.props.transactions.map(t => t.id) }));
-      return;
-    }
-    this.setState({ selected: [] });
+  public handleClick = (event: any, id: string) => {
+    this.props.handleSelectTransaction(id);
   }
 
-  public handleClick = (event: any, id: string) => {
-    const selected = [ ...this.state.selected ];
-    const selectedIndex = selected.indexOf(id);
-
-    if (selectedIndex === -1) {
-      selected.push(id);
-    }
-    else {
-      selected.splice(selectedIndex, 1);
-    }
-
-    this.setState({ selected });
+  public getSorting = (order: Order, orderBy: string) => {
+    return order === 'desc'
+      ? (a: Transaction, b: Transaction) => (
+        b[orderBy] === a[orderBy]
+        ? a.id < b.id ? -1 : 1
+        : b[orderBy] < a[orderBy] ? -1 : 1
+      ) : (a: Transaction, b: Transaction) => (
+        a[orderBy] === b[orderBy]
+        ? a.id < b.id ? -1 : 1
+        : a[orderBy] < b[orderBy] ? -1 : 1
+      );
   }
 
   public render() {
-    const { numSelected, order, orderBy, selected } = this.state;
-    const { classes, transactions } = this.props;
+    const { numSelected, order, orderBy } = this.state;
+    const { classes, currentTransaction, transactions, userDetails } = this.props;
+    const transactionList = transactions.sort(this.getSorting(order!, orderBy!));
     return (
       <Paper className={classes.root}>
         <TransactionListToolbar
@@ -83,11 +92,11 @@ class TransactionListContainer extends React.Component<WithStyles<any> & ITransa
         <TransactionList
           order={order}
           orderBy={orderBy}
-          handleSelectAllClick={this.handleSelectAllClick}
           handleRequestSort={this.handleRequestSort}
           handleClick={this.handleClick}
-          selected={selected}
-          transactions={transactions}
+          currentTransaction={currentTransaction}
+          transactions={transactionList}
+          userDetails={userDetails}
         />
       </Paper>
     );

@@ -9,11 +9,13 @@ import TransactionListHeader from './TransactionListHeader';
 export interface ITransactionListProps {
   order: Order;
   orderBy: string;
-  handleSelectAllClick: ((event: any, checked: boolean) => void);
   handleRequestSort: ((event: any, property: any) => void);
   handleClick: ((event: any, id: string) => void);
-  selected: string[];
+  currentTransaction: Transaction;
   transactions: Transaction[];
+  userDetails: {
+    publicKey: string;
+  }
 }
 
 export interface ITransactionListState {
@@ -26,15 +28,13 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class TransactionList extends React.Component<WithStyles<any> & ITransactionListProps, ITransactionListState> {
   public render() {
-    const { classes, handleClick, handleRequestSort, handleSelectAllClick, order, orderBy, selected, transactions } = this.props;
+    const { classes, currentTransaction, handleClick, handleRequestSort, order, orderBy, transactions, userDetails } = this.props;
     return (
       <div className={classes.tableWrapper}>
-        <Table style={{ tableLayout: 'auto' }}>
+        <Table style={{ tableLayout: 'fixed' }}>
           <TransactionListHeader
-            numSelected={selected.length}
             order={order}
             orderBy={orderBy}
-            onSelectAllClick={handleSelectAllClick}
             onRequestSort={handleRequestSort}
             rowCount={transactions.length}
           />
@@ -43,8 +43,8 @@ class TransactionList extends React.Component<WithStyles<any> & ITransactionList
             transactions={transactions}
             order={order}
             orderBy={orderBy}
-            selected={selected}
-            sortable={true}
+            currentTransaction={currentTransaction}
+            userDetails={userDetails}
           />
         </Table>
       </div>

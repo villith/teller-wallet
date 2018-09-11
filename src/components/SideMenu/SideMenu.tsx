@@ -13,10 +13,10 @@ import {
 } from '@material-ui/core';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import {
+  AttachMoney as AttachMoneyIcon,
   ChevronLeft as ChevronLeftIcon,
+  Contacts as ContactsIcon,
   Home as HomeIcon,
-  OfflineBolt as OfflineBoltIcon,
-  PanTool as PanToolIcon,
 } from '@material-ui/icons';
 import * as classNames from 'classnames';
 import * as React from 'react';
@@ -106,7 +106,7 @@ class SideMenu extends React.Component<WithStyles<any> & ISideMenuProps, ISideMe
             className={classes.listItem}                
           >
             <ListItemIcon>
-              <OfflineBoltIcon />
+              <AttachMoneyIcon />
             </ListItemIcon>
             <ListItemText primary={'Transactions'}/>
           </ListItem>
@@ -115,9 +115,9 @@ class SideMenu extends React.Component<WithStyles<any> & ISideMenuProps, ISideMe
             className={classes.listItem}                
           >
             <ListItemIcon>
-              <PanToolIcon />
+              <ContactsIcon />
             </ListItemIcon>
-            <ListItemText primary={'Settings'}/>
+            <ListItemText primary={'Contacts'}/>
           </ListItem>
         </List>
       </Drawer>

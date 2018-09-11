@@ -1,5 +1,4 @@
 import {
-  Checkbox,
   StyleRulesCallback,
   TableCell,
   TableHead,
@@ -15,10 +14,8 @@ import * as React from 'react';
 import { Order } from './TransactionListContainer';
 
 export interface ITransactionListHeaderProps {
-  numSelected: number;
   order: Order;
   orderBy: string;
-  onSelectAllClick: ((event: any, checked: boolean) => void);
   onRequestSort: ((event: any, property: any) => void);
   rowCount: number;
 }
@@ -28,9 +25,9 @@ export interface ITransactionListHeaderState {
 }
 
 const columnData = [
-  { id: 'timestamp', numeric: true, disablePadding: false, label: 'Timestamp' },
+  { id: 'timestamp', numeric: false, disablePadding: false, label: 'Timestamp' },
   { id: 'to', numeric: false, disablePadding: false, label: 'Recipient' },
-  { id: 'amount', numeric: true, disablePadding: false, label: 'Amount' },  
+  { id: 'amount', numeric: true, disablePadding: false, label: 'Amount' },
 ];
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
@@ -43,22 +40,15 @@ class TransactionListHeader extends React.Component<WithStyles<any> & ITransacti
   }
 
   public render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+    const { order, orderBy } = this.props;
     return (
-    <TableHead>
+      <TableHead>
         <TableRow>
-          <TableCell scope='col' padding='checkbox'>
-            <Checkbox
-              indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={rowCount > 0 && numSelected === rowCount}
-              onChange={onSelectAllClick}
-            />
-          </TableCell>
           {columnData.map(column => {
             const { id, numeric, disablePadding, label } = column;
             return (
               <TableCell
-                key={id}                
+                key={id}
                 numeric={numeric}
                 padding={disablePadding ? 'none' : 'default'}
                 scope='col'

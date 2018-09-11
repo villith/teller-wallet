@@ -9,7 +9,7 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { Apps as AppsIcon, Menu as MenuIcon, SaveAlt as SaveAltIcon, Share as ShareIcon } from '@material-ui/icons';
+import { Menu as MenuIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import * as classNames from 'classnames';
 import * as React from 'react';
 
@@ -94,32 +94,12 @@ class NavBar extends React.Component<WithStyles<any> & INavBarProps, INavBarStat
             Teller Wallet
           </Typography>
           <div className={classes.action}>
-            <Tooltip title='Show Strategy List'>
+            <Tooltip title='Settings'>
               <IconButton
                 color='inherit'
-                aria-label='test'
+                aria-label='Settings'
               >
-                <AppsIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-          <div className={classes.action}>
-            <Tooltip title='Import'>
-              <IconButton
-                color='inherit'
-                aria-label='Import'
-              >
-                <SaveAltIcon />
-              </IconButton>
-            </Tooltip>
-          </div>
-          <div className={classes.action}>
-            <Tooltip title='Export'>
-              <IconButton
-                color='inherit'
-                aria-label='Export'                
-              >
-                <ShareIcon />
+                <SettingsIcon />
               </IconButton>
             </Tooltip>
           </div>
