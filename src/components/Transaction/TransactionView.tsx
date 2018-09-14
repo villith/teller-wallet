@@ -2,13 +2,12 @@ import { Paper, StyleRulesCallback, Theme, WithStyles, withStyles } from '@mater
 import * as React from 'react';
 
 import { Transaction } from '../../classes/Transaction';
+import { IUser } from '../../interfaces/User';
 import TransactionDetails from './TransactionDetails';
 
 export interface ITransactionViewProps {
   currentTransaction: Transaction;
-  userDetails: {
-    publicKey: string;
-  }
+  user: IUser;
 }
 
 export interface ITransactionViewState {
@@ -27,12 +26,12 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class TransactionView extends React.Component<WithStyles<any> & ITransactionViewProps, ITransactionViewState> {
   public render() {
-    const { classes, currentTransaction, userDetails } = this.props;
+    const { classes, currentTransaction, user } = this.props;
     return (
       <Paper className={classes.root}>
         <TransactionDetails
           currentTransaction={currentTransaction}
-          userDetails={userDetails}
+          user={user}
         />
       </Paper>
     );

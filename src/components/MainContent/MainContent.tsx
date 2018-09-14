@@ -1,21 +1,21 @@
-import { Fade, Grid, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
+import { StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as React from 'react';
+import { Route, Switch } from 'react-router';
 
 import { Contact } from '../../classes/Contact';
 import { Transaction } from '../../classes/Transaction';
 import { findById, findByPublicKey } from '../../helpers/get';
-import BalanceHistory from '../Charts/BalanceHistory';
-import ContactView from '../Contact/ContactView';
-import TransactionView from '../Transaction/TransactionView';
-import TransactionListContainer from '../TransactionList/TransactionListContainer';
-import { Aux } from '../winAux';
+import { IUser } from '../../interfaces/User';
+import AddressBookPage from '../Pages/AddressBookPage';
+import HomePage from '../Pages/HomePage';
+import SettingsPage from '../Pages/SettingsPage';
+import TransactionPage from '../Pages/TransactionPage';
 
 export interface IMainContentProps {
+  currentPage: string;
   contacts: Contact[];
   transactions: Transaction[];
-  userDetails: {
-    publicKey: string;
-  }
+  user: IUser;
   toggleContactFavorite: (id: string) => void;
 }
 
@@ -48,10 +48,10 @@ class MainContent extends React.Component<WithStyles<any> & IMainContentProps, I
 
   public getTransactionContact = () => {
     const { currentTransaction } = this.state;
-    const { contacts, userDetails } = this.props;
+    const { contacts, user } = this.props;
     let contact = {} as Contact;
     if (currentTransaction.id) {
-      const incoming = currentTransaction.to === userDetails.publicKey;
+      const incoming = currentTransaction.to === user.address;
       const publicKey = incoming ? currentTransaction.to : currentTransaction.from;
       const index = findByPublicKey(publicKey, contacts);
       if (index !== -1) {
@@ -68,42 +68,55 @@ class MainContent extends React.Component<WithStyles<any> & IMainContentProps, I
   }
 
   public render() {
-    const { classes, contacts, toggleContactFavorite, transactions, userDetails } = this.props;
+    const { contacts, toggleContactFavorite, transactions, user } = this.props;
     const { currentTransaction } = this.state;
     const contact = this.getTransactionContact();
+    const homePage = () => {
+      return (
+        <HomePage
+          contacts={contacts}
+          transactions={transactions}
+          user={user}
+        />
+      )
+    }
+    const addressBookPage = () => {
+      return (
+        <AddressBookPage
+          contacts={contacts}
+          transactions={transactions}
+        />
+      )
+    }
+    const transactionPage = () => {
+      return (
+        <TransactionPage
+          toggleContactFavorite={toggleContactFavorite}
+          user={user}
+          handleSelectTransaction={this.handleSelectTransaction}
+          currentTransaction={currentTransaction}
+          contact={contact}
+          contacts={contacts}
+          transactions={transactions}
+        />
+      )
+    }
+    const settingsPage = () => {
+      return (
+        <SettingsPage
+          contacts={contacts}
+          transactions={transactions}
+        />
+      )
+    }
     return (
-      <Aux>
-        <Grid item={true} xs={6} md={7} className={classes.widgets}>
-            {currentTransaction && currentTransaction.id &&
-              <Fade>
-                <TransactionView
-                  currentTransaction={currentTransaction}
-                  userDetails={userDetails}
-                />
-              </Fade>
-            }
-          {contact && contact.id &&
-            <ContactView
-              currentTransaction={currentTransaction}
-              contact={contact}
-              toggleContactFavorite={toggleContactFavorite}
-            />
-          }
-          <BalanceHistory
-            transactions={transactions}
-            contacts={contacts}
-            userDetails={userDetails}
-          />
-        </Grid>
-        <Grid item={true} xs={6} md={5}>
-          <TransactionListContainer
-            currentTransaction={currentTransaction}
-            transactions={transactions}
-            handleSelectTransaction={this.handleSelectTransaction}
-            userDetails={userDetails}
-          />
-        </Grid>
-      </Aux>
+      <Switch>
+        // tslint:disable-next-line:jsx-no-lambda
+        <Route exact={true} path='/' render={homePage} />
+        <Route path='/transactions' render={transactionPage} />
+        <Route path='/addressBook' render={addressBookPage} />
+        <Route path='/settings' render={settingsPage} />
+      </Switch>
     );
   }
 }

@@ -5,6 +5,7 @@ import { Contact } from '../../classes/Contact';
 import { Ledger } from '../../classes/Ledger';
 import { Transaction } from '../../classes/Transaction';
 import { findById } from '../../helpers/get';
+import { IUser } from '../../interfaces/User';
 import MainContent from '../MainContent/MainContent';
 import NavBar from '../NavBar/NavBar';
 import SideMenu from '../SideMenu/SideMenu';
@@ -15,12 +16,11 @@ export interface IAppProps {
 
 export interface IAppState {
   contacts: Contact[];
+  currentPage: string;
   loading: boolean;
   sideMenuOpen: boolean;
   transactions: Transaction[];
-  userDetails: {
-    publicKey: string;
-  }
+  user: IUser;
 }
 
 const drawerWidth = 280;
@@ -90,30 +90,37 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
   public state = {
     loading: true,
+    currentPage: '/',
     contacts: [] as Contact[],
     sideMenuOpen: false,
     transactions: [] as Transaction[],
-    userDetails: {
-      publicKey: '0412002a124dec17ce9818cb2cef659b60f3f18b00ff9600502b9861c67b6aa26c83aece4af332690efe19e84e4eeb419e9e144ad72f247b85f2c172fd49f03ee6'
-    }
+    user: {} as IUser
   }
 
   public componentDidMount() {
-    this.loadTransactions();
-    this.loadContacts();
+    this.loadContent();
+  }
+
+  public loadContent = () => {
+    const promiseArray: Array<Promise<void>> = [
+      this.loadTransactions(),
+      this.loadContacts(),
+      this.loadUser()
+    ];
+    Promise.all(promiseArray).then(() => this.setState({ loading: false }));
   }
 
   public loadTransactions = () => {
-    fetch('my_ledger.json')
+    return fetch('my_ledger.json')
       .then(result => result.json())
       .then((ledger: Ledger) => {
         const { entries } = ledger;
-        this.setState({ loading: false, transactions: entries });
+        this.setState({ transactions: entries });
     });
   }
 
   public loadContacts = () => {
-    fetch('contacts.json')
+    return fetch('contacts.json')
       .then(result => result.json())
       .then((contacts: Contact[]) => {
         contacts.map(contact => {
@@ -133,6 +140,13 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
     });
   }
 
+  public loadUser = () => {
+    return fetch('user.json')
+      .then(result => result.json())
+      .then((user: IUser) => {
+        this.setState({ user });
+    });
+  }
   public toggleSideMenu = () => {
     this.setState(prevState => ({ sideMenuOpen: !prevState.sideMenuOpen }));
   }
@@ -157,7 +171,7 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
 
   public render() {
     const { classes } = this.props;
-    const { contacts, loading, sideMenuOpen, transactions, userDetails } = this.state;
+    const { contacts, currentPage, loading, sideMenuOpen, transactions, user } = this.state;
     return (
       <div className={classes.root}>
         <NavBar
@@ -174,9 +188,10 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
         ) : (
           <Grid container={true} spacing={16} className={classes.content}>
             <MainContent
+              currentPage={currentPage}
               contacts={contacts}
               transactions={transactions}
-              userDetails={userDetails}
+              user={user}
               toggleContactFavorite={this.toggleContactFavorite}
             />
           </Grid>

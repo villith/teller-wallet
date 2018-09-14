@@ -2,6 +2,7 @@ import { StyleRulesCallback, Table, Theme, WithStyles, withStyles } from '@mater
 import * as React from 'react';
 
 import { Transaction } from '../../classes/Transaction';
+import { IUser } from '../../interfaces/User';
 import TransactionListBody from './TransactionListBody';
 import { Order } from './TransactionListContainer';
 import TransactionListHeader from './TransactionListHeader';
@@ -13,9 +14,7 @@ export interface ITransactionListProps {
   handleClick: ((event: any, id: string) => void);
   currentTransaction: Transaction;
   transactions: Transaction[];
-  userDetails: {
-    publicKey: string;
-  }
+  user: IUser;
 }
 
 export interface ITransactionListState {
@@ -28,7 +27,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class TransactionList extends React.Component<WithStyles<any> & ITransactionListProps, ITransactionListState> {
   public render() {
-    const { classes, currentTransaction, handleClick, handleRequestSort, order, orderBy, transactions, userDetails } = this.props;
+    const { classes, currentTransaction, handleClick, handleRequestSort, order, orderBy, transactions, user } = this.props;
     return (
       <div className={classes.tableWrapper}>
         <Table padding='dense' style={{ tableLayout: 'fixed' }}>
@@ -44,7 +43,7 @@ class TransactionList extends React.Component<WithStyles<any> & ITransactionList
             order={order}
             orderBy={orderBy}
             currentTransaction={currentTransaction}
-            userDetails={userDetails}
+            user={user}
           />
         </Table>
       </div>

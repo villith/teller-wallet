@@ -2,6 +2,7 @@ import { Paper, StyleRulesCallback, Theme, WithStyles, withStyles } from '@mater
 import * as React from 'react';
 
 import { Transaction } from '../../classes/Transaction';
+import { IUser } from '../../interfaces/User';
 import TransactionList from './TransactionList';
 import TransactionListToolbar from './TransactionListToolbar';
 
@@ -9,9 +10,7 @@ export interface ITransactionListContainerProps {
   handleSelectTransaction: (id: string) => void;
   currentTransaction: Transaction;
   transactions: Transaction[];
-  userDetails: {
-    publicKey: string;
-  }
+  user: IUser;
 }
 
 export interface ITransactionListContainerState {
@@ -82,7 +81,7 @@ class TransactionListContainer extends React.Component<WithStyles<any> & ITransa
 
   public render() {
     const { numSelected, order, orderBy } = this.state;
-    const { classes, currentTransaction, transactions, userDetails } = this.props;
+    const { classes, currentTransaction, transactions, user } = this.props;
     const transactionList = transactions.sort(this.getSorting(order!, orderBy!));
     return (
       <Paper className={classes.root}>
@@ -96,7 +95,7 @@ class TransactionListContainer extends React.Component<WithStyles<any> & ITransa
           handleClick={this.handleClick}
           currentTransaction={currentTransaction}
           transactions={transactionList}
-          userDetails={userDetails}
+          user={user}
         />
       </Paper>
     );

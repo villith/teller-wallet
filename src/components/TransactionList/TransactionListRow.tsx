@@ -4,14 +4,13 @@ import * as moment from 'moment';
 import * as React from 'react';
 
 import { Transaction } from '../../classes/Transaction';
+import { IUser } from '../../interfaces/User';
 
 export interface ITransactionListRowProps {
   isSelected: boolean;
   transaction: Transaction;
   handleClick: ((event: any, id: string) => void);
-  userDetails: {
-    publicKey: string;
-  }
+  user: IUser;
 }
 
 export interface ITransactionListRowState {
@@ -38,8 +37,8 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class TransactionListRow extends React.Component<WithStyles<any> & ITransactionListRowProps, ITransactionListRowState> {
   public getAmountDetails = () => {
-    const { transaction, userDetails } = this.props;
-    const incoming = transaction.to === userDetails.publicKey;
+    const { transaction, user } = this.props;
+    const incoming = transaction.to === user.address;
     const amountDetails = {
       color: incoming ? positiveAmountColor : negativeAmountColor,
       sign: incoming ? '+' : '-'

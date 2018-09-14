@@ -5,13 +5,12 @@ import * as React from 'react';
 
 import { Contact } from '../../classes/Contact';
 import { Transaction } from '../../classes/Transaction';
+import { IUser } from '../../interfaces/User';
 
 export interface IBalanceHistoryProps {
   contacts: Contact[];
   transactions: Transaction[];
-  userDetails: {
-    publicKey: string;
-  }
+  user: IUser;
 }
 
 export interface IBalanceHistoryState {
@@ -36,7 +35,7 @@ class BalanceHistory extends React.Component<WithStyles<any> & IBalanceHistoryPr
         .sort((a, b) => a.timestamp - b.timestamp)
         .map(transaction => {
           const { id, amount, to, timestamp } = transaction;
-          const incoming = to === this.props.userDetails.publicKey;
+          const incoming = to === this.props.user.address;
           console.log(`INCOMING: ${incoming} | AMOUNT: ${amount}`);
           incoming ? balance += amount : balance -= amount;
           console.log(`BALANCE: ${balance}`);

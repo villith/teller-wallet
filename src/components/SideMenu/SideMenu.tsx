@@ -20,6 +20,7 @@ import {
 } from '@material-ui/icons';
 import * as classNames from 'classnames';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 export interface ISideMenuProps {
   closeMenu: (() => void);
@@ -91,25 +92,29 @@ class SideMenu extends React.Component<WithStyles<any> & ISideMenuProps, ISideMe
           </IconButton>
         </div>
         <Divider />
-        <List>          
-          <ListItem
-            button={true}
-            className={classes.listItem}                
-          >
-            <ListItemIcon>
-              <HomeIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Overview'}/>
-          </ListItem>
-          <ListItem
-            button={true}
-            className={classes.listItem}                
-          >
-            <ListItemIcon>
-              <AttachMoneyIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Transactions'}/>
-          </ListItem>
+        <List>
+          <Link to='/'>
+            <ListItem
+              button={true}
+              className={classes.listItem}                
+            >
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Overview'}/>
+            </ListItem>
+          </Link>
+          <Link to='/transactions'>
+            <ListItem
+              button={true}
+              className={classes.listItem}                
+            >
+              <ListItemIcon>
+                <AttachMoneyIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Transactions'}/>
+            </ListItem>
+          </Link>
           <ListItem
             button={true}
             className={classes.listItem}                

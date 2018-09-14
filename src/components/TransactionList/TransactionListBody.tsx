@@ -2,6 +2,7 @@ import { StyleRulesCallback, TableBody, Theme, WithStyles, withStyles } from '@m
 import * as React from 'react';
 
 import { Transaction } from '../../classes/Transaction';
+import { IUser } from '../../interfaces/User';
 import { Order } from './TransactionListContainer';
 import TransactionListRow from './TransactionListRow';
 
@@ -11,9 +12,7 @@ export interface ITransactionListBodyProps {
   orderBy?: string;
   handleClick: (event: any, id: string) => void;
   transactions: Transaction[];
-  userDetails: {
-    publicKey: string;
-  }
+  user: IUser;
 }
 
 export interface ITransactionListBodyState {
@@ -26,7 +25,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class TransactionListBody extends React.Component<WithStyles<any> & ITransactionListBodyProps, ITransactionListBodyState> {
   public render() {
-    const { currentTransaction, handleClick, transactions, userDetails } = this.props;
+    const { currentTransaction, handleClick, transactions, user } = this.props;
     return (
       <TableBody>
         {transactions.map((transaction) => {
@@ -37,7 +36,7 @@ class TransactionListBody extends React.Component<WithStyles<any> & ITransaction
             key={id}
             transaction={transaction}
             handleClick={handleClick}
-            userDetails={userDetails}
+            user={user}
           />
         })}
       </TableBody>

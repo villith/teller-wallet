@@ -3,12 +3,11 @@ import * as jdenticon from 'jdenticon';
 import * as React from 'react';
 
 import { Transaction } from '../../classes/Transaction';
+import { IUser } from '../../interfaces/User';
 
 export interface ITransactionDetailsProps {
   currentTransaction: Transaction;
-  userDetails: {
-    publicKey: string;
-  }
+  user: IUser;
 }
 
 export interface ITransactionDetailsState {
