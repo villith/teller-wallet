@@ -1,16 +1,21 @@
 import { Paper, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as React from 'react';
 
+import { Contact } from '../../classes/Contact';
 import { Transaction } from '../../classes/Transaction';
 import { IUser } from '../../interfaces/User';
 import TransactionList from './TransactionList';
 import TransactionListToolbar from './TransactionListToolbar';
 
 export interface ITransactionListContainerProps {
+  listName: string;
+  numRows?: number;
   handleSelectTransaction: (id: string) => void;
   currentTransaction: Transaction;
   transactions: Transaction[];
   user: IUser;
+  sortable: boolean;
+  contacts: Contact[];
 }
 
 export interface ITransactionListContainerState {
@@ -81,11 +86,12 @@ class TransactionListContainer extends React.Component<WithStyles<any> & ITransa
 
   public render() {
     const { numSelected, order, orderBy } = this.state;
-    const { classes, currentTransaction, transactions, user } = this.props;
+    const { classes, contacts, currentTransaction, listName, sortable, numRows, transactions, user } = this.props;
     const transactionList = transactions.sort(this.getSorting(order!, orderBy!));
     return (
       <Paper className={classes.root}>
         <TransactionListToolbar
+          listName={listName}
           numSelected={numSelected}
         />
         <TransactionList
@@ -94,8 +100,11 @@ class TransactionListContainer extends React.Component<WithStyles<any> & ITransa
           handleRequestSort={this.handleRequestSort}
           handleClick={this.handleClick}
           currentTransaction={currentTransaction}
+          numRows={numRows}
           transactions={transactionList}
           user={user}
+          sortable={sortable}
+          contacts={contacts}
         />
       </Paper>
     );

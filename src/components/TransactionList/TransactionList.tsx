@@ -1,6 +1,7 @@
 import { StyleRulesCallback, Table, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as React from 'react';
 
+import { Contact } from '../../classes/Contact';
 import { Transaction } from '../../classes/Transaction';
 import { IUser } from '../../interfaces/User';
 import TransactionListBody from './TransactionListBody';
@@ -15,6 +16,9 @@ export interface ITransactionListProps {
   currentTransaction: Transaction;
   transactions: Transaction[];
   user: IUser;
+  numRows?: number;
+  sortable: boolean;
+  contacts: Contact[];
 }
 
 export interface ITransactionListState {
@@ -27,7 +31,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class TransactionList extends React.Component<WithStyles<any> & ITransactionListProps, ITransactionListState> {
   public render() {
-    const { classes, currentTransaction, handleClick, handleRequestSort, order, orderBy, transactions, user } = this.props;
+    const { classes, contacts, currentTransaction, numRows, sortable, handleClick, handleRequestSort, order, orderBy, transactions, user } = this.props;
     return (
       <div className={classes.tableWrapper}>
         <Table padding='dense' style={{ tableLayout: 'fixed' }}>
@@ -36,6 +40,7 @@ class TransactionList extends React.Component<WithStyles<any> & ITransactionList
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
             rowCount={transactions.length}
+            sortable={sortable}
           />
           <TransactionListBody
             handleClick={handleClick}
@@ -44,6 +49,8 @@ class TransactionList extends React.Component<WithStyles<any> & ITransactionList
             orderBy={orderBy}
             currentTransaction={currentTransaction}
             user={user}
+            numRows={numRows}
+            contacts={contacts}
           />
         </Table>
       </div>

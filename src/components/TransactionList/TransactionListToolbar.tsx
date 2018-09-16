@@ -4,6 +4,7 @@ import * as React from 'react';
 
 export interface ITransactionListToolbarProps {
   numSelected: number;
+  listName: string;
 }
 
 export interface ITransactionListToolbarState {
@@ -50,7 +51,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class TransactionListToolbar extends React.Component<WithStyles<any> & ITransactionListToolbarProps, ITransactionListToolbarState> {
   public render() {
-    const { classes, numSelected } = this.props;
+    const { classes, listName, numSelected } = this.props;
     return (
       <Toolbar>
         <div className={classes.title}>
@@ -60,7 +61,7 @@ class TransactionListToolbar extends React.Component<WithStyles<any> & ITransact
             </Typography>
           ) : (
             <Typography variant='title' id='tableTitle'>
-              Transaction List
+              {listName}
             </Typography>
           )}
         </div>

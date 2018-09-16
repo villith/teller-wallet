@@ -18,6 +18,7 @@ export interface ITransactionListHeaderProps {
   orderBy: string;
   onRequestSort: ((event: any, property: any) => void);
   rowCount: number;
+  sortable: boolean;
 }
 
 export interface ITransactionListHeaderState {
@@ -26,7 +27,7 @@ export interface ITransactionListHeaderState {
 
 const columnData = [
   { id: 'timestamp', numeric: false, disablePadding: false, label: 'Timestamp' },
-  { id: 'to', numeric: false, disablePadding: false, label: 'Recipient' },
+  { id: 'to', numeric: false, disablePadding: false, label: 'To / From' },
   { id: 'amount', numeric: true, disablePadding: false, label: 'Amount' },
 ];
 
@@ -36,11 +37,13 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class TransactionListHeader extends React.Component<WithStyles<any> & ITransactionListHeaderProps, ITransactionListHeaderState> {
   public createSortHandler = (property: any) => (event: any) => {
-    this.props.onRequestSort(event, property);
+    if (this.props.sortable) {
+      this.props.onRequestSort(event, property);
+    }
   }
 
   public render() {
-    const { order, orderBy } = this.props;
+    const { order, orderBy, sortable } = this.props;
     return (
       <TableHead>
         <TableRow>
@@ -54,19 +57,21 @@ class TransactionListHeader extends React.Component<WithStyles<any> & ITransacti
                 scope='col'
                 sortDirection={orderBy === id ? order : false}
               >
-                <Tooltip
-                  title='Sort'
-                  placement={numeric ? 'bottom-end' : 'bottom-start'}
-                  enterDelay={300}
-                >
-                  <TableSortLabel
-                    active={orderBy === id}
-                    direction={order}
-                    onClick={this.createSortHandler(id)}
+                {sortable ? (
+                  <Tooltip
+                    title='Sort'
+                    placement={numeric ? 'bottom-end' : 'bottom-start'}
+                    enterDelay={300}
                   >
-                    {label}
-                  </TableSortLabel>
-                </Tooltip>
+                    <TableSortLabel
+                      active={orderBy === id}
+                      direction={order}
+                      onClick={this.createSortHandler(id)}
+                    >
+                      {label}
+                    </TableSortLabel>
+                  </Tooltip>
+                ) : ( <div>{label}</div> )}
               </TableCell>
             )
           })}

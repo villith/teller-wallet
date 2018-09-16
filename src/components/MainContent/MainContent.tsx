@@ -74,7 +74,9 @@ class MainContent extends React.Component<WithStyles<any> & IMainContentProps, I
     const homePage = () => {
       return (
         <HomePage
+          currentTransaction={currentTransaction}
           contacts={contacts}
+          handleSelectTransaction={this.handleSelectTransaction}
           transactions={transactions}
           user={user}
         />

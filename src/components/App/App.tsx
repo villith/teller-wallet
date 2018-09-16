@@ -1,4 +1,5 @@
 import { CircularProgress, Grid, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
+import * as dotenv from 'dotenv';
 import * as React from 'react';
 
 import { Contact } from '../../classes/Contact';
@@ -9,6 +10,8 @@ import { IUser } from '../../interfaces/User';
 import MainContent from '../MainContent/MainContent';
 import NavBar from '../NavBar/NavBar';
 import SideMenu from '../SideMenu/SideMenu';
+
+dotenv.config();
 
 export interface IAppProps {
   placeholder?: string;
@@ -183,7 +186,7 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
           open={sideMenuOpen}
           openMenu={this.openSideMenu}
         />
-        {loading === true ? (
+        {loading ? (
           <CircularProgress className={classes.loading} size={96} />
         ) : (
           <Grid container={true} spacing={16} className={classes.content}>

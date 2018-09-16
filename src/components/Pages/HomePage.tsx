@@ -3,7 +3,6 @@ import {
   CardContent,
   CardMedia,
   Grid,
-  Paper,
   StyleRulesCallback,
   Theme,
   Typography,
@@ -14,11 +13,14 @@ import * as React from 'react';
 
 import { Contact } from '../../classes/Contact';
 import { Transaction } from '../../classes/Transaction';
-import { getBalance } from '../../helpers/utils';
+import { getBalance, getFullName } from '../../helpers/utils';
 import { IUser } from '../../interfaces/User';
+import TransactionListContainer from '../TransactionList/TransactionListContainer';
 import { Aux } from '../winAux';
 
 export interface IHomePageRowProps {
+  currentTransaction: Transaction;
+  handleSelectTransaction: (id: string) => void;
   contacts: Contact[];
   transactions: Transaction[];
   user: IUser;
@@ -30,53 +32,68 @@ export interface IHomePageRowState {
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   root: {},
+  address: {
+    paddingLeft: theme.spacing.unit,
+    paddingRight: theme.spacing.unit,
+    overflowWrap: 'break-word',
+    wordWrap: 'break-word'
+  },
   card: {
-    width: '15%',
-    marginLeft: '2.5%'
+    display: 'flex',
+    flex: '1 0 auto',
+    justifyContent: 'center',
   },
   cardHeader: {
     height: '55%',
     width: '100%',
     overflow: 'hidden'
   },
-  cardBody: {
-    
-  },
-  cardIcon: {
-    marginLeft: '-100px'
-  },
   media: {
-    height: '140px'
   }
 });
 
-class HomePageRow extends React.Component<WithStyles<any> & IHomePageRowProps, IHomePageRowState> { 
+class HomePageRow extends React.Component<WithStyles<any> & IHomePageRowProps, IHomePageRowState> {
+  public selectTransaction = (id: string) => {
+    this.props.handleSelectTransaction(id);     
+  }
   public render() {
-    const { classes, transactions, user } = this.props;
-    
+    const { classes, contacts, currentTransaction, transactions, user } = this.props;
+    const balance = getBalance(transactions, user.address);
+    const conversionRate = 1.38;
+    const convertedBalance = balance * conversionRate;
     return (
       <Aux>
-        <Grid item={true} xs={12} className={classes.user}>
+        <Grid item={true} xs={4} className={classes.user}>
           <Card className={classes.card} elevation={4}>
-          <div className={classes.cardHeader}>
             <CardMedia
               className={classes.media}
               image='teller_icon.png'
             />
-          </div>
-          <CardContent>
-            <Typography variant='subheading'>ABOUT</Typography>
-            <Typography variant='body1'>
-              The other thing with Lorem Ipsum is that you have to take out its family.
-              An ‘extremely credible source’ has called my office and told me that Barack Obama’s placeholder text is a fraud.
-              We have so many things that we have to do better... and certainly ipsum is one of them. I’m the best thing that ever happened to placeholder text.
-            </Typography>
-          </CardContent>
+            <CardContent>
+              <Typography variant='headline'>{getFullName(user)}</Typography>
+              <Typography className={classes.address} variant='caption'>{user.address}</Typography>
+              <Typography variant='subheading'>BALANCE:
+                &nbsp;<strong>{balance} TEL</strong>
+                <Typography variant='caption'> (${convertedBalance.toFixed(2)} USD)</Typography>
+              </Typography>
+            </CardContent>
           </Card>
         </Grid>
-        <Paper className={classes.root}>
-          {getBalance(transactions, user.address)}
-        </Paper>
+        <Grid item={true} xs={4} className={classes.transactionList}>
+          <TransactionListContainer
+            currentTransaction={currentTransaction}
+            transactions={transactions}
+            user={user}
+            handleSelectTransaction={this.selectTransaction}
+            listName={'Recent Transactions'}
+            numRows={5}
+            sortable={false}
+            contacts={contacts}
+          />
+        </Grid>
+        {/* <Grid item={true} xs={4} className={classes.newsFeed}>
+          <NewsFeedContainer />
+        </Grid> */}
       </Aux>
     );
   }

@@ -69,6 +69,9 @@ class TransactionPageRow extends React.Component<WithStyles<any> & ITransactionP
           transactions={transactions}
           handleSelectTransaction={handleSelectTransaction}
           user={user}
+          listName={'Transaction List'}
+          sortable={true}
+          contacts={contacts}
         />
       </Grid>
     </Aux>

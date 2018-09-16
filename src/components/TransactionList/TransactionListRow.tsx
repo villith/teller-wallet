@@ -3,6 +3,7 @@ import * as classNames from 'classnames';
 import * as moment from 'moment';
 import * as React from 'react';
 
+import { Contact } from '../../classes/Contact';
 import { Transaction } from '../../classes/Transaction';
 import { IUser } from '../../interfaces/User';
 
@@ -11,6 +12,7 @@ export interface ITransactionListRowProps {
   transaction: Transaction;
   handleClick: ((event: any, id: string) => void);
   user: IUser;
+  contact?: Contact;
 }
 
 export interface ITransactionListRowState {
@@ -47,8 +49,9 @@ class TransactionListRow extends React.Component<WithStyles<any> & ITransactionL
   }
 
   public render() {
-    const { classes, isSelected, transaction, handleClick } = this.props;
+    const { classes, contact, isSelected, transaction, handleClick, user } = this.props;
     const amountDetails = this.getAmountDetails();
+    const incoming = transaction.to === user.address;
     return (
       <TableRow
         hover={true}
@@ -64,7 +67,9 @@ class TransactionListRow extends React.Component<WithStyles<any> & ITransactionL
           {moment(transaction.timestamp).format('MMM DD, YY - HH:mm:ss')}
         </TableCell>
         <TableCell className={classes.cell}>
-          {transaction.to}
+          {contact ? `${contact.firstName} ${contact.lastName}`
+            : incoming ? transaction.from : transaction.to
+          }
         </TableCell>
         <TableCell numeric={true} className={classes.cell} style={{ color: amountDetails.color }}>
           {amountDetails.sign}{transaction.amount}
