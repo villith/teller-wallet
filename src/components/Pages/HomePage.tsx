@@ -1,20 +1,10 @@
-import {
-  Card,
-  CardContent,
-  CardMedia,
-  Grid,
-  StyleRulesCallback,
-  Theme,
-  Typography,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
+import { Grid, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as React from 'react';
 
 import { Contact } from '../../classes/Contact';
 import { Transaction } from '../../classes/Transaction';
-import { getBalance, getFullName } from '../../helpers/utils';
 import { IUser } from '../../interfaces/User';
+import ProfileCard from '../Card/ProfileCard';
 import TransactionListContainer from '../TransactionList/TransactionListContainer';
 import { Aux } from '../winAux';
 
@@ -41,14 +31,23 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   card: {
     display: 'flex',
     flex: '1 0 auto',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   cardHeader: {
     height: '55%',
     width: '100%',
     overflow: 'hidden'
   },
+  content: {
+    maxWidth: '100%'
+  },
+  mediaContainer: {
+    padding: theme.spacing.unit
+  },
   media: {
+    height: '100%',
+    width: 'auto',
+    backgroundSize: 'contain !important'
   }
 });
 
@@ -58,26 +57,13 @@ class HomePageRow extends React.Component<WithStyles<any> & IHomePageRowProps, I
   }
   public render() {
     const { classes, contacts, currentTransaction, transactions, user } = this.props;
-    const balance = getBalance(transactions, user.address);
-    const conversionRate = 1.38;
-    const convertedBalance = balance * conversionRate;
     return (
       <Aux>
         <Grid item={true} xs={4} className={classes.user}>
-          <Card className={classes.card} elevation={4}>
-            <CardMedia
-              className={classes.media}
-              image='teller_icon.png'
-            />
-            <CardContent>
-              <Typography variant='headline'>{getFullName(user)}</Typography>
-              <Typography className={classes.address} variant='caption'>{user.address}</Typography>
-              <Typography variant='subheading'>BALANCE:
-                &nbsp;<strong>{balance} TEL</strong>
-                <Typography variant='caption'> (${convertedBalance.toFixed(2)} USD)</Typography>
-              </Typography>
-            </CardContent>
-          </Card>
+          <ProfileCard
+            user={user}
+            transactions={transactions}
+          />
         </Grid>
         <Grid item={true} xs={4} className={classes.transactionList}>
           <TransactionListContainer

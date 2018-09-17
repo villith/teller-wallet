@@ -1,5 +1,6 @@
-import { CircularProgress, Paper, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
+import { Paper, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as React from 'react';
+
 import NewsFeed from './NewsFeed';
 
 export interface INewsFeedContainerProps {
@@ -34,13 +35,10 @@ class NewsFeedContainer extends React.Component<WithStyles<any> & INewsFeedConta
     const { loading } = this.state;
     return (
       <Paper className={classes.root}>
-        {loading ? (
-          <CircularProgress className={classes.loading} size={48} />
-        ) : (
-          <NewsFeed
-            handleLoading={this.handleLoading}
-          />
-        )}
+        <NewsFeed
+          loading={loading}
+          handleLoading={this.handleLoading}
+        />
       </Paper>
     );
   }

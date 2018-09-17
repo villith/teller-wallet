@@ -3,6 +3,7 @@ import * as React from 'react';
 import CryptoPanic from './CryptoPanic';
 
 export interface INewsFeedProps {
+  loading: boolean;
   handleLoading: (loading: boolean) => void;
 }
 
@@ -22,10 +23,11 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class NewsFeed extends React.Component<WithStyles<any> & INewsFeedProps, INewsFeedState> {
   public render() {
-    const { classes, handleLoading } = this.props;
+    const { classes, loading, handleLoading } = this.props;
     return (
       <Paper className={classes.root}>
         <CryptoPanic
+          loading={loading}
           handleLoading={handleLoading}
         />
       </Paper>

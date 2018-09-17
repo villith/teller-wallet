@@ -1,16 +1,24 @@
-import { Paper, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
+import { CircularProgress, Paper, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as React from 'react';
 
 import NewsFeedRow from './NewsFeedRow';
 
 export interface ICryptoPanicProps {
   handleLoading: (loading: boolean) => void;
+  loading: boolean;
 }
 
 export interface ICryptoPanicState {
   error: string;
   posts: ICryptoPanicPost[];
   filter: Filter;
+}
+
+export interface ICryptoPanicResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: ICryptoPanicPost[];
 }
 
 export interface ICryptoPanicPost {
@@ -55,8 +63,9 @@ type Filter =
   | 'saved'
   | 'lol';
 
+const corsProxy = 'https://cors-anywhere.herokuapp.com/';
 const baseURL = 'https://cryptopanic.com/api/';
-const auth = `?7d673691e38f7fc8655eadc8199fe8d5ed677037`
+const auth = `?auth_token=7d673691e38f7fc8655eadc8199fe8d5ed677037`
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   root: {
@@ -72,7 +81,7 @@ class CryptoPanic extends React.Component<WithStyles<any> & ICryptoPanicProps, I
   public state = {
     error: '',
     posts: [] as ICryptoPanicPost[],
-    filter: 'hot' as Filter
+    filter: 'hot' as Filter,
   }
 
   public componentDidMount() {
@@ -80,14 +89,17 @@ class CryptoPanic extends React.Component<WithStyles<any> & ICryptoPanicProps, I
   }
 
   public getPosts = (filter: Filter) => {
-    const url = `${baseURL}posts/${auth}&public&filter=${filter}`;
+    const url = `${corsProxy}${baseURL}posts/${auth}&public&filter=${filter}`;
     const request = fetch(url, {
       headers: { 'Content-Type': 'application/json' }
     });
     request
-      .then(result => result.json())
-      .then((posts: ICryptoPanicPost[]) => {
-        this.setState({ posts }, () => this.props.handleLoading(false));
+      .then(result => {
+        return result.json()
+      })
+      .then((response: ICryptoPanicResponse) => {
+        const { results } = response;
+        this.setState({ posts: results }, () => this.props.handleLoading(false));
     });
 
     request.catch(e => {
@@ -97,19 +109,23 @@ class CryptoPanic extends React.Component<WithStyles<any> & ICryptoPanicProps, I
   }
 
   public render() {
-    const { classes } = this.props;
+    const { classes, loading } = this.props;
     const { error, posts } = this.state;
     return (
       <Paper className={classes.root}>
-        {error.length > 0 ? (
-          <div>{error}</div>
+        {loading ? (
+          <CircularProgress size={48} />
         ) : (
-          posts.map((post: ICryptoPanicPost, index) => {
-            return <NewsFeedRow
-              key={index}
-              post={post}
-            />
-          })
+          error.length > 0 ? (
+            <div>{error}</div>
+          ) : (
+            posts.map((post: ICryptoPanicPost, index) => {
+              return <NewsFeedRow
+                key={index}
+                post={post}
+              />
+            })
+          )
         )}
       </Paper>
     );
