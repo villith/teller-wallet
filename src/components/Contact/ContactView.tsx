@@ -2,12 +2,10 @@ import { Paper, StyleRulesCallback, Theme, WithStyles, withStyles } from '@mater
 import * as React from 'react';
 
 import { Contact } from '../../classes/Contact';
-import { Transaction } from '../../classes/Transaction';
 import ContactDetails from './ContactDetails';
 
 export interface IContactViewProps {
   contact: Contact;
-  currentTransaction: Transaction;
   toggleContactFavorite: (id: string) => void;
 }
 
@@ -27,12 +25,11 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class ContactView extends React.Component<WithStyles<any> & IContactViewProps, IContactViewState> {
   public render() {
-    const { classes, contact, currentTransaction, toggleContactFavorite } = this.props;
+    const { classes, contact, toggleContactFavorite } = this.props;
     return (
       <Paper className={classes.root}>
         <ContactDetails
           contact={contact}
-          currentTransaction={currentTransaction}
           toggleContactFavorite={toggleContactFavorite}
         />
       </Paper>

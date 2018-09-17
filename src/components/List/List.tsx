@@ -4,24 +4,27 @@ import * as React from 'react';
 import { Contact } from '../../classes/Contact';
 import { Transaction } from '../../classes/Transaction';
 import { IUser } from '../../interfaces/User';
-import TransactionListBody from './TransactionListBody';
-import { Order } from './TransactionListContainer';
-import TransactionListHeader from './TransactionListHeader';
+import ListBody from './ListBody';
+import { IListColumn, ListType, Order } from './ListContainer';
+import ListHeader from './ListHeader';
 
-export interface ITransactionListProps {
+export interface IListProps {
+  columns: IListColumn[];
+  currentData: Transaction | Contact;
+  data: Array<Transaction | Contact>;
+  listType: ListType;
   order: Order;
   orderBy: string;
   handleRequestSort: ((event: any, property: any) => void);
   handleClick: ((event: any, id: string) => void);
-  currentTransaction: Transaction;
-  transactions: Transaction[];
   user: IUser;
   numRows?: number;
   sortable: boolean;
-  contacts: Contact[];
+  contacts?: Contact[];
+  transactions?: Transaction[];
 }
 
-export interface ITransactionListState {
+export interface IListState {
   placeholder?: string;
 }
 
@@ -29,28 +32,32 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   root: {}
 });
 
-class TransactionList extends React.Component<WithStyles<any> & ITransactionListProps, ITransactionListState> {
+class List extends React.Component<WithStyles<any> & IListProps, IListState> {
   public render() {
-    const { classes, contacts, currentTransaction, numRows, sortable, handleClick, handleRequestSort, order, orderBy, transactions, user } = this.props;
+    const { classes, contacts, columns, currentData, data, numRows, sortable, handleClick, handleRequestSort, order, orderBy, transactions, user, listType } = this.props;
     return (
       <div className={classes.tableWrapper}>
         <Table padding='dense' style={{ tableLayout: 'fixed' }}>
-          <TransactionListHeader
+          <ListHeader
+            columns={columns}
+            listType={listType}
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
-            rowCount={transactions.length}
+            rowCount={data.length}
             sortable={sortable}
           />
-          <TransactionListBody
+          <ListBody
+            listType={listType}
             handleClick={handleClick}
-            transactions={transactions}
+            data={data}
+            currentData={currentData}
             order={order}
             orderBy={orderBy}
-            currentTransaction={currentTransaction}
             user={user}
             numRows={numRows}
             contacts={contacts}
+            transactions={transactions}
           />
         </Table>
       </div>
@@ -58,4 +65,4 @@ class TransactionList extends React.Component<WithStyles<any> & ITransactionList
   }
 }
 
-export default withStyles(styles)(TransactionList)
+export default withStyles(styles)(List)

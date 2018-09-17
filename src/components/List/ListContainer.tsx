@@ -4,27 +4,38 @@ import * as React from 'react';
 import { Contact } from '../../classes/Contact';
 import { Transaction } from '../../classes/Transaction';
 import { IUser } from '../../interfaces/User';
-import TransactionList from './TransactionList';
-import TransactionListToolbar from './TransactionListToolbar';
+import List from './List';
+import ListToolbar from './ListToolbar';
 
-export interface ITransactionListContainerProps {
+export interface IListContainerProps {
+  columns: IListColumn[];
+  currentData: Transaction | Contact;
+  data: Array<Transaction | Contact>;
+  listType: ListType;
   listName: string;
-  numRows?: number;
-  handleSelectTransaction: (id: string) => void;
-  currentTransaction: Transaction;
-  transactions: Transaction[];
   user: IUser;
   sortable: boolean;
-  contacts: Contact[];
+  handleSelectRow: (id: string, listType: ListType) => void;
+  numRows?: number;
+  transactions?: Transaction[];
+  contacts?: Contact[];
 }
 
-export interface ITransactionListContainerState {
+export interface IListContainerState {
   numSelected: number;
   order: Order;
   orderBy: string;
 }
 
+export interface IListColumn {
+  id: string;
+  numeric: boolean;
+  disablePadding: boolean;
+  label: string;
+}
+
 export type Order = 'asc' | 'desc';
+export type ListType = 'Transaction' | 'Contact';
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   root: {
@@ -39,7 +50,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   },
 });
 
-class TransactionListContainer extends React.Component<WithStyles<any> & ITransactionListContainerProps, ITransactionListContainerState> {
+class ListContainer extends React.Component<WithStyles<any> & IListContainerProps, IListContainerState> {
   public state = {
     numSelected: 0,
     order: 'desc' as Order,
@@ -48,11 +59,11 @@ class TransactionListContainer extends React.Component<WithStyles<any> & ITransa
 
   public componentWillMount() {
     const { order, orderBy } = this.state;
-    const { currentTransaction, transactions, handleSelectTransaction } = this.props;
+    const { currentData, data, listType, handleSelectRow } = this.props;
 
-    if (!currentTransaction.id) {
-      const transactionList = transactions.sort(this.getSorting(order!, orderBy!));
-      handleSelectTransaction(transactionList[0].id);
+    if (!currentData.id) {
+      const listData = data.sort(this.getSorting(order!, orderBy!));
+      handleSelectRow(listData[0].id, listType);
     }
   }
 
@@ -68,7 +79,7 @@ class TransactionListContainer extends React.Component<WithStyles<any> & ITransa
   }
 
   public handleClick = (event: any, id: string) => {
-    this.props.handleSelectTransaction(id);
+    this.props.handleSelectRow(id, this.props.listType);
   }
 
   public getSorting = (order: Order, orderBy: string) => {
@@ -86,24 +97,27 @@ class TransactionListContainer extends React.Component<WithStyles<any> & ITransa
 
   public render() {
     const { numSelected, order, orderBy } = this.state;
-    const { classes, contacts, currentTransaction, listName, sortable, numRows, transactions, user } = this.props;
-    const transactionList = transactions.sort(this.getSorting(order!, orderBy!));
+    const { classes, columns, contacts, currentData, data, listName, listType, sortable, numRows, transactions, user } = this.props;
+    const listData = data.sort(this.getSorting(order!, orderBy!));
     return (
       <Paper className={classes.root}>
-        <TransactionListToolbar
+        <ListToolbar
           listName={listName}
           numSelected={numSelected}
         />
-        <TransactionList
+        <List
+          listType={listType}
+          columns={columns}
           order={order}
           orderBy={orderBy}
           handleRequestSort={this.handleRequestSort}
           handleClick={this.handleClick}
-          currentTransaction={currentTransaction}
+          currentData={currentData}
           numRows={numRows}
-          transactions={transactionList}
+          data={listData}
           user={user}
           sortable={sortable}
+          transactions={transactions}
           contacts={contacts}
         />
       </Paper>
@@ -111,4 +125,4 @@ class TransactionListContainer extends React.Component<WithStyles<any> & ITransa
   }
 }
 
-export default withStyles(styles)(TransactionListContainer)
+export default withStyles(styles)(ListContainer)

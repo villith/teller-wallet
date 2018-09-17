@@ -16,12 +16,10 @@ import * as jdenticon from 'jdenticon';
 import * as React from 'react';
 
 import { Contact } from '../../classes/Contact';
-import { Transaction } from '../../classes/Transaction';
 import { getFullName } from '../../helpers/utils';
 
 export interface IContactDetailsProps {
   contact: Contact;
-  currentTransaction: Transaction;
   toggleContactFavorite: (id: string) => void;
 }
 

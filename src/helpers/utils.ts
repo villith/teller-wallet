@@ -54,7 +54,8 @@ const getBalanceArray = (transactions: Transaction[], publicKey: string) => {
   return balanceArray;
 }
 
-const getContact = (contacts: Contact[], publicKey: string) => {
+const getContact = (contacts: Contact[] | undefined, publicKey: string) => {
+  if (!contacts) { return undefined; }
   const index = findByPublicKey(publicKey, contacts);
   return index === -1 ? undefined : contacts[index];
 }

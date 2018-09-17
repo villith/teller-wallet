@@ -28,6 +28,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   action: {
     marginLeft: theme.spacing.unit / 4,
     marginRight: theme.spacing.unit / 4,
+    '-webkit-app-region': 'initial'
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -35,6 +36,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+  '-webkit-app-region': 'drag'
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -61,6 +63,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   menuButton: {
     marginLeft: 12,
     marginRight: 36,
+    '-webkit-app-region': 'initial'
   },
   hide: {
     display: 'none',

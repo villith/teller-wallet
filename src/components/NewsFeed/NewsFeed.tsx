@@ -1,5 +1,6 @@
-import { Paper, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
+import { StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as React from 'react';
+
 import CryptoPanic from './CryptoPanic';
 
 export interface INewsFeedProps {
@@ -18,19 +19,18 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.standard,
     }),
+    minHeight: '300px'
   },
 });
 
 class NewsFeed extends React.Component<WithStyles<any> & INewsFeedProps, INewsFeedState> {
   public render() {
-    const { classes, loading, handleLoading } = this.props;
+    const { loading, handleLoading } = this.props;
     return (
-      <Paper className={classes.root}>
-        <CryptoPanic
-          loading={loading}
-          handleLoading={handleLoading}
-        />
-      </Paper>
+      <CryptoPanic
+        loading={loading}
+        handleLoading={handleLoading}
+      />
     );
   }
 }

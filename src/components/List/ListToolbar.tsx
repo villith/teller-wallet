@@ -2,12 +2,12 @@ import { StyleRulesCallback, Theme, Toolbar, Typography, WithStyles, withStyles 
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import * as React from 'react';
 
-export interface ITransactionListToolbarProps {
+export interface IListToolbarProps {
   numSelected: number;
   listName: string;
 }
 
-export interface ITransactionListToolbarState {
+export interface IListToolbarState {
   placeholder?: string;
 }
 
@@ -49,7 +49,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   },
 });
 
-class TransactionListToolbar extends React.Component<WithStyles<any> & ITransactionListToolbarProps, ITransactionListToolbarState> {
+class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, IListToolbarState> {
   public render() {
     const { classes, listName, numSelected } = this.props;
     return (
@@ -70,4 +70,4 @@ class TransactionListToolbar extends React.Component<WithStyles<any> & ITransact
   }
 }
 
-export default withStyles(styles)(TransactionListToolbar)
+export default withStyles(styles)(ListToolbar)

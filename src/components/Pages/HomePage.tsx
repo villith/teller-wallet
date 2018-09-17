@@ -5,12 +5,13 @@ import { Contact } from '../../classes/Contact';
 import { Transaction } from '../../classes/Transaction';
 import { IUser } from '../../interfaces/User';
 import ProfileCard from '../Card/ProfileCard';
-import TransactionListContainer from '../TransactionList/TransactionListContainer';
+import ListContainer, { ListType } from '../List/ListContainer';
+import NewsFeedContainer from '../NewsFeed/NewsFeedContainer';
 import { Aux } from '../winAux';
 
 export interface IHomePageRowProps {
   currentTransaction: Transaction;
-  handleSelectTransaction: (id: string) => void;
+  handleSelectRow: (id: string, listType: ListType) => void;
   contacts: Contact[];
   transactions: Transaction[];
   user: IUser;
@@ -19,6 +20,12 @@ export interface IHomePageRowProps {
 export interface IHomePageRowState {
   placeholder?: string;
 }
+
+const columnData = [
+  { id: 'timestamp', numeric: false, disablePadding: false, label: 'Timestamp' },
+  { id: 'to', numeric: false, disablePadding: false, label: 'To / From' },
+  { id: 'amount', numeric: true, disablePadding: false, label: 'Amount' },
+];
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   root: {},
@@ -48,38 +55,42 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
     height: '100%',
     width: 'auto',
     backgroundSize: 'contain !important'
+  },
+  user: {
+    marginBottom: theme.spacing.unit * 3
   }
 });
 
 class HomePageRow extends React.Component<WithStyles<any> & IHomePageRowProps, IHomePageRowState> {
-  public selectTransaction = (id: string) => {
-    this.props.handleSelectTransaction(id);     
-  }
   public render() {
-    const { classes, contacts, currentTransaction, transactions, user } = this.props;
+    const { classes, contacts, currentTransaction, handleSelectRow, transactions, user } = this.props;
     return (
       <Aux>
-        <Grid item={true} xs={4} className={classes.user}>
-          <ProfileCard
-            user={user}
-            transactions={transactions}
-          />
+        <Grid item={true} xs={8}>
+          <Grid item={true} xs={12} className={classes.user}>
+            <ProfileCard
+              user={user}
+              transactions={transactions}
+            />
+          </Grid>
+          <Grid item={true} xs={12} className={classes.transactionList}>
+            <ListContainer
+              columns={columnData}
+              currentData={currentTransaction}
+              data={transactions}
+              user={user}
+              handleSelectRow={handleSelectRow}
+              listType={'Transaction'}
+              listName={'Recent Transactions'}
+              numRows={5}
+              sortable={false}
+              contacts={contacts}
+            />
+          </Grid>
         </Grid>
-        <Grid item={true} xs={4} className={classes.transactionList}>
-          <TransactionListContainer
-            currentTransaction={currentTransaction}
-            transactions={transactions}
-            user={user}
-            handleSelectTransaction={this.selectTransaction}
-            listName={'Recent Transactions'}
-            numRows={5}
-            sortable={false}
-            contacts={contacts}
-          />
-        </Grid>
-        {/* <Grid item={true} xs={4} className={classes.newsFeed}>
+        <Grid item={true} xs={4} className={classes.newsFeed}>
           <NewsFeedContainer />
-        </Grid> */}
+        </Grid>
       </Aux>
     );
   }

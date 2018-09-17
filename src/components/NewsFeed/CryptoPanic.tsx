@@ -1,4 +1,4 @@
-import { CircularProgress, Paper, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
+import { CircularProgress, List, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as React from 'react';
 
 import NewsFeedRow from './NewsFeedRow';
@@ -11,7 +11,7 @@ export interface ICryptoPanicProps {
 export interface ICryptoPanicState {
   error: string;
   posts: ICryptoPanicPost[];
-  filter: Filter;
+  filter: CryptoPanicFilter;
 }
 
 export interface ICryptoPanicResponse {
@@ -54,7 +54,7 @@ export interface ICryptoPanicPost {
   url: string;
 }
 
-type Filter =
+export type CryptoPanicFilter =
   'rising'
   | 'hot'
   | 'bullish'
@@ -74,21 +74,28 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.standard,
     }),
+    minHeight: '300px',
+    display: 'flex'
   },
+  loading: {
+    margin: 'auto'
+  }
 });
 
 class CryptoPanic extends React.Component<WithStyles<any> & ICryptoPanicProps, ICryptoPanicState> {
   public state = {
     error: '',
     posts: [] as ICryptoPanicPost[],
-    filter: 'hot' as Filter,
+    filter: 'hot' as CryptoPanicFilter,
   }
 
   public componentDidMount() {
-    this.getPosts(this.state.filter as Filter);
+    if (this.state.posts.length === 0) {
+      this.getPosts(this.state.filter as CryptoPanicFilter);
+    }
   }
 
-  public getPosts = (filter: Filter) => {
+  public getPosts = (filter: CryptoPanicFilter) => {
     const url = `${corsProxy}${baseURL}posts/${auth}&public&filter=${filter}`;
     const request = fetch(url, {
       headers: { 'Content-Type': 'application/json' }
@@ -112,22 +119,22 @@ class CryptoPanic extends React.Component<WithStyles<any> & ICryptoPanicProps, I
     const { classes, loading } = this.props;
     const { error, posts } = this.state;
     return (
-      <Paper className={classes.root}>
-        {loading ? (
-          <CircularProgress size={48} />
+      loading ? (
+        <CircularProgress className={classes.loading} size={48} />
+      ) : (
+        error.length > 0 ? (
+          <div>{error}</div>
         ) : (
-          error.length > 0 ? (
-            <div>{error}</div>
-          ) : (
-            posts.map((post: ICryptoPanicPost, index) => {
+          <List>
+            {posts.slice(0, 10).map((post: ICryptoPanicPost, index) => {
               return <NewsFeedRow
                 key={index}
                 post={post}
               />
-            })
-          )
-        )}
-      </Paper>
+            })}
+          </List>
+        )
+      )
     );
   }
 }

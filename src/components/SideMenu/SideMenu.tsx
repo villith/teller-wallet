@@ -82,8 +82,9 @@ class SideMenu extends React.Component<WithStyles<any> & ISideMenuProps, ISideMe
       <Drawer
         open={open}
         variant='permanent'
+        className={classes.drawer}
         classes={{
-          paper: classNames(classes.drawer, classes.drawerPaper, !open && classes.drawerPaperClose),
+          paper: classNames(classes.drawerPaper, !open && classes.drawerPaperClose),
         }}
       >
         <div className={classes.toolbar}>
@@ -115,15 +116,17 @@ class SideMenu extends React.Component<WithStyles<any> & ISideMenuProps, ISideMe
               <ListItemText primary={'Transactions'}/>
             </ListItem>
           </Link>
-          <ListItem
-            button={true}
-            className={classes.listItem}                
-          >
-            <ListItemIcon>
-              <ContactsIcon />
-            </ListItemIcon>
-            <ListItemText primary={'Contacts'}/>
-          </ListItem>
+          <Link to='/addressBook'>
+            <ListItem
+              button={true}
+              className={classes.listItem}                
+            >
+              <ListItemIcon>
+                <ContactsIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Contacts'}/>
+            </ListItem>
+          </Link>
         </List>
       </Drawer>
     );

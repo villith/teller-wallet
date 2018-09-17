@@ -11,9 +11,11 @@ import {
 } from '@material-ui/core';
 import * as React from 'react';
 
-import { Order } from './TransactionListContainer';
+import { IListColumn, ListType, Order } from './ListContainer';
 
-export interface ITransactionListHeaderProps {
+export interface IListHeaderProps {
+  columns: IListColumn[];
+  listType: ListType;
   order: Order;
   orderBy: string;
   onRequestSort: ((event: any, property: any) => void);
@@ -21,21 +23,15 @@ export interface ITransactionListHeaderProps {
   sortable: boolean;
 }
 
-export interface ITransactionListHeaderState {
+export interface IListHeaderState {
   placeholder?: string;
 }
-
-const columnData = [
-  { id: 'timestamp', numeric: false, disablePadding: false, label: 'Timestamp' },
-  { id: 'to', numeric: false, disablePadding: false, label: 'To / From' },
-  { id: 'amount', numeric: true, disablePadding: false, label: 'Amount' },
-];
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   root: {}
 });
 
-class TransactionListHeader extends React.Component<WithStyles<any> & ITransactionListHeaderProps, ITransactionListHeaderState> {
+class ListHeader extends React.Component<WithStyles<any> & IListHeaderProps, IListHeaderState> {
   public createSortHandler = (property: any) => (event: any) => {
     if (this.props.sortable) {
       this.props.onRequestSort(event, property);
@@ -43,11 +39,11 @@ class TransactionListHeader extends React.Component<WithStyles<any> & ITransacti
   }
 
   public render() {
-    const { order, orderBy, sortable } = this.props;
+    const { columns, order, orderBy, sortable } = this.props;
     return (
       <TableHead>
         <TableRow>
-          {columnData.map(column => {
+          {columns.map(column => {
             const { id, numeric, disablePadding, label } = column;
             return (
               <TableCell
@@ -81,4 +77,4 @@ class TransactionListHeader extends React.Component<WithStyles<any> & ITransacti
   }
 }
 
-export default withStyles(styles)(TransactionListHeader)
+export default withStyles(styles)(ListHeader)

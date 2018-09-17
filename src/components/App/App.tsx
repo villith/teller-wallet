@@ -26,8 +26,6 @@ export interface IAppState {
   user: IUser;
 }
 
-const drawerWidth = 280;
-
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   root: {
     flexGrow: 1,
@@ -35,31 +33,18 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
     overflow: 'hidden',
     position: 'relative',
     display: 'flex',
+    height: '100%'
   },
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
     marginTop: theme.spacing.unit * 6,
+    overflowY: 'scroll'
   },
   action: {
     marginLeft: theme.spacing.unit / 4,
     marginRight: theme.spacing.unit / 4,
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
   },
   avatar: {
     backgroundColor: theme.palette.primary.main,
@@ -87,6 +72,9 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
     marginRight: theme.spacing.unit,
     color: 'white',
     borderColor: 'white'
+  },
+  loading: {
+    margin: 'auto'
   }
 });
 

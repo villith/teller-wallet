@@ -6,6 +6,7 @@ import { Contact } from '../../classes/Contact';
 import { Transaction } from '../../classes/Transaction';
 import { findById, findByPublicKey } from '../../helpers/get';
 import { IUser } from '../../interfaces/User';
+import { ListType } from '../List/ListContainer';
 import AddressBookPage from '../Pages/AddressBookPage';
 import HomePage from '../Pages/HomePage';
 import SettingsPage from '../Pages/SettingsPage';
@@ -20,30 +21,32 @@ export interface IMainContentProps {
 }
 
 export interface IMainContentState {
+  currentContact: Contact;
   currentTransaction: Transaction;
 }
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   root: {},
-  tableWrapper: {
-    overflowX: 'auto',
-  },
-  widgets: {
-    '&> div': {
-      marginBottom: theme.spacing.unit * 1.5
-    }
-  }
 });
 
 class MainContent extends React.Component<WithStyles<any> & IMainContentProps, IMainContentState> {
   public state = {
+    currentContact: {} as Contact,
     currentTransaction: {} as Transaction
   }
 
-  public handleSelectTransaction = (transactionId: string) => {
-    const index = findById(transactionId, this.props.transactions);
-    const tx = this.props.transactions[index];
-    this.setState({ currentTransaction: tx });
+  public handleSelectRow = (id: string, listType: ListType) => {
+    if (listType === 'Transaction') {
+      const index = findById(id, this.props.transactions);
+      const tx = this.props.transactions[index];
+      this.setState({ currentTransaction: tx });
+    }
+
+    if (listType === 'Contact') {
+      const index = findById(id, this.props.contacts);
+      const contact = this.props.contacts[index];
+      this.setState({ currentContact: contact });
+    }
   }
 
   public getTransactionContact = () => {
@@ -69,14 +72,14 @@ class MainContent extends React.Component<WithStyles<any> & IMainContentProps, I
 
   public render() {
     const { contacts, toggleContactFavorite, transactions, user } = this.props;
-    const { currentTransaction } = this.state;
+    const { currentContact, currentTransaction } = this.state;
     const contact = this.getTransactionContact();
     const homePage = () => {
       return (
         <HomePage
           currentTransaction={currentTransaction}
           contacts={contacts}
-          handleSelectTransaction={this.handleSelectTransaction}
+          handleSelectRow={this.handleSelectRow}
           transactions={transactions}
           user={user}
         />
@@ -85,6 +88,10 @@ class MainContent extends React.Component<WithStyles<any> & IMainContentProps, I
     const addressBookPage = () => {
       return (
         <AddressBookPage
+          currentContact={currentContact}
+          handleSelectRow={this.handleSelectRow}
+          toggleContactFavorite={toggleContactFavorite}
+          user={user}
           contacts={contacts}
           transactions={transactions}
         />
@@ -95,7 +102,7 @@ class MainContent extends React.Component<WithStyles<any> & IMainContentProps, I
         <TransactionPage
           toggleContactFavorite={toggleContactFavorite}
           user={user}
-          handleSelectTransaction={this.handleSelectTransaction}
+          handleSelectRow={this.handleSelectRow}
           currentTransaction={currentTransaction}
           contact={contact}
           contacts={contacts}
@@ -113,7 +120,6 @@ class MainContent extends React.Component<WithStyles<any> & IMainContentProps, I
     }
     return (
       <Switch>
-        // tslint:disable-next-line:jsx-no-lambda
         <Route exact={true} path='/' render={homePage} />
         <Route path='/transactions' render={transactionPage} />
         <Route path='/addressBook' render={addressBookPage} />

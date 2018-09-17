@@ -1,10 +1,8 @@
 const electron = require('electron');
 const path = require('path');
 const url = require('url');
-// Module to control application life.
-const app = electron.app;
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow;
+
+const { app, BrowserWindow } = electron;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -12,7 +10,15 @@ let mainWindow;
 
 const createWindow = () => {
     // Create the browser window.
-    mainWindow = new BrowserWindow({width: 800, height: 600});
+    mainWindow = new BrowserWindow({
+        autoHideMenuBar: true,
+        frame: false,
+        height: 800,
+        minHeight: 800,
+        minWidth: 1280,
+        title: 'Teller Wallet',
+        width: 1280,
+    });
 
     const startUrl = process.env.ELECTRON_START_URL || url.format({
       pathname: path.join(__dirname, '/../build/index.html'),
@@ -20,10 +26,16 @@ const createWindow = () => {
       slashes: true
     });
     mainWindow.loadURL(startUrl);
-
+    mainWindow.once('ready-to-show', () => {
+        win.show();
+    });
     // Open the DevTools.
     mainWindow.webContents.openDevTools();
 
+    mainWindow.webContents.on('new-window', (event, windowUrl) => {
+        event.preventDefault();
+        shell.openExternal(windowUrl);
+    });
     // Emitted when the window is closed.
     mainWindow.on('closed', () => {
         // Dereference the window object, usually you would store windows
