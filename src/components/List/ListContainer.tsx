@@ -137,6 +137,7 @@ class ListContainer extends React.Component<WithStyles<any> & IListContainerProp
       <Paper className={classes.root}>
         <ListToolbar
           listName={listName}
+          listType={listType}
           numSelected={numSelected}
           filters={this.buildFilters()}
           filter={filter}

@@ -9,15 +9,18 @@ import {
   WithStyles,
   withStyles,
 } from '@material-ui/core';
+import InputLabel from '@material-ui/core/InputLabel';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import { FilterList as FilterListIcon } from '@material-ui/icons';
 import * as React from 'react';
 
-import { IFilter } from './ListContainer';
+import { TransactionFilterables } from '../../classes/Transaction';
+import { IFilter, ListType } from './ListContainer';
 
 export interface IListToolbarProps {
   numSelected: number;
   listName: string;
+  listType: ListType;
   filters: IFilter[];
   filter: boolean;
   filterBy: string;
@@ -65,6 +68,14 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   title: {
     flex: '0 0 auto',
   },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120
+  },
+  filters: {
+    display: 'flex',
+    flexWrap: 'wrap'
+  }
 });
 
 class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, IListToolbarState> {
@@ -73,12 +84,15 @@ class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, I
   }
 
   public buildFilterInputs = () => {
-    return this.props.filters.map((filter, index) => {
-      return (
-        <FormControl key={index}>
-          <Input />
-        </FormControl>
-      )
+    const { classes } = this.props;
+    return this.props.filters.filter(filter => filter.key in TransactionFilterables)
+      .map((filter, index) => {
+        return (
+          <FormControl className={classes.formControl} key={index}>
+            <InputLabel htmlFor={`filter-${filter.key}`}>{`${filter.key.charAt(0).toUpperCase()}${filter.key.substr(1)}`}</InputLabel>
+            <Input />
+          </FormControl>
+        )
     })
   }
 

@@ -35,6 +35,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 class SendPage extends React.Component<WithStyles<any> & ISendPageProps, ISendPageState> {
   public render() {
     const { currentContact, currentTransaction, handleChangeContact, handleSelectRow, contacts, transactions, user } = this.props;
+    const data = transactions.filter(tx => (tx.to === currentContact.address) || (tx.from === currentContact.address));
     return (
       <Aux>
         <Grid item={true} xs={8}>
@@ -49,7 +50,7 @@ class SendPage extends React.Component<WithStyles<any> & ISendPageProps, ISendPa
             columns={columnData}
             currentData={currentTransaction}
             listType={'Transaction'}
-            data={transactions}
+            data={data}
             handleSelectRow={handleSelectRow}
             user={user}
             listName={`Transactions with ${currentContact.firstName} ${currentContact.lastName}`}
