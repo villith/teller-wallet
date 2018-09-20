@@ -1,5 +1,6 @@
 import { CircularProgress, Grid, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as dotenv from 'dotenv';
+import * as fs from 'fs';
 import { History, Location } from 'history';
 import * as React from 'react';
 import { match } from 'react-router';
@@ -140,6 +141,27 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
         this.setState({ user });
     });
   }
+
+  public handleEditContact = (contact: Contact) => {
+    const { contacts } = this.state;
+    const index = findById(contact.id, contacts);
+    const existingContact = contacts[index];
+    if (existingContact) {
+      contacts[index] = contact;
+      this.setState({ contacts });
+    }
+    else {
+      console.log(`Contact with ${contact.id} could not be found.`);
+    }
+  }
+
+  public saveContacts = () => {
+    fs.writeFile('contacts.json', this.state.contacts, (err: any) => {
+      if (err) { throw err; }
+      console.log('Saved contact changes');
+    });
+  }
+
   public toggleSideMenu = () => {
     this.setState(prevState => ({ sideMenuOpen: !prevState.sideMenuOpen }));
   }
@@ -186,6 +208,7 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
               transactions={transactions}
               user={user}
               toggleContactFavorite={this.toggleContactFavorite}
+              handleEditContact={this.handleEditContact}
             />
           </Grid>
         )}

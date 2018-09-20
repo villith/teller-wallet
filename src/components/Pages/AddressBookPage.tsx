@@ -10,6 +10,7 @@ import { Aux } from '../winAux';
 
 export interface IAddressBookPageRowProps {
   currentContact: Contact;
+  handleEditContact: (contact: Contact) => void;
   handleSelectRow: (id: string, listType: ListType) => void;
   toggleContactFavorite?: (id: string) => void;
   user: IUser;
@@ -32,7 +33,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class AddressBookPage extends React.Component<WithStyles<any> & IAddressBookPageRowProps, IAddressBookPageRowState> { 
   public render() {
-    const { currentContact, contacts, handleSelectRow, user, transactions, toggleContactFavorite } = this.props;
+    const { currentContact, contacts, handleEditContact, handleSelectRow, user, transactions, toggleContactFavorite } = this.props;
     
     return (
       <Aux>
@@ -41,6 +42,7 @@ class AddressBookPage extends React.Component<WithStyles<any> & IAddressBookPage
             <ContactView
               contact={currentContact}
               toggleContactFavorite={toggleContactFavorite}
+              handleEditContact={handleEditContact}
             />
           }
         </Grid>

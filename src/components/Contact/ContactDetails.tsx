@@ -5,6 +5,7 @@ import {
   Checkbox,
   Grid,
   StyleRulesCallback,
+  TextField,
   Theme,
   Typography,
   WithStyles,
@@ -22,6 +23,7 @@ import {
 } from '@material-ui/icons';
 import * as jdenticon from 'jdenticon';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 import { Contact } from '../../classes/Contact';
 import { getFullName } from '../../helpers/utils';
@@ -30,6 +32,7 @@ import { Aux } from '../winAux';
 export interface IContactDetailsProps {
   contact: Contact;
   deleteContact?: (id: string) => void;
+  handleEditContact?: (contact: Contact) => void;
   toggleContactFavorite?: (id: string) => void;
 }
 
@@ -76,6 +79,9 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
       backgroundColor: lighten('#4caf50', 0.85)
     }
   },
+  textField: {
+
+  }
 });
 
 class ContactDetails extends React.Component<WithStyles<any> & IContactDetailsProps, IContactDetailsState> {
@@ -101,7 +107,9 @@ class ContactDetails extends React.Component<WithStyles<any> & IContactDetailsPr
 
   public render() {
     const { editModeActive } = this.state;
-    const { classes, contact, deleteContact, toggleContactFavorite } = this.props;
+    const { classes, contact, deleteContact, handleEditContact, toggleContactFavorite } = this.props;
+    console.log('HANDLE EDIT CONTACT');
+    console.log(handleEditContact);
     // @ts-ignore
     const svg = jdenticon.toSvg(contact.id, 48);
     return (
@@ -111,31 +119,58 @@ class ContactDetails extends React.Component<WithStyles<any> & IContactDetailsPr
             <div className={classes.cardIcon}>
               <div dangerouslySetInnerHTML={{ __html: svg }} />
             </div>
-            <div className={classes.cardTitle}>
-              <Typography variant={'display1'}>
-                {getFullName(contact)}
-              </Typography>
-            </div>
+            {editModeActive ? (
+              <div className={classes.cardTitleEdit}>
+                <TextField
+                  id='title'
+                  value={contact.title}
+                  label='Title'
+                  className={classes.textField}
+                />
+                <TextField
+                  id='firstName'
+                  value={contact.firstName}
+                  label='First Name'
+                  className={classes.textField}
+                />
+                <TextField
+                  id='lastName'
+                  value={contact.lastName}
+                  label='Last Name'
+                  className={classes.textField}
+                />
+              </div>
+            ) : (
+              <Link to='/addressBook' className={classes.cardTitle}>
+                <Typography variant={'display1'}>
+                  {getFullName(contact)}
+                </Typography>
+              </Link>
+            )}
             <div className={classes.spacer} />
             <div className={classes.actions}>
-              {editModeActive ? (
-                <Aux>
-                  <Tooltip title='Confirm Changes'>
-                    <Button variant='flat' className={classes.confirmButton} onClick={this.confirmEditContact}>
-                      <DoneIcon />
+              {handleEditContact ? (
+                editModeActive ? (
+                  <Aux>
+                    <Tooltip title='Confirm Changes'>
+                      <Button variant='flat' className={classes.confirmButton} onClick={this.confirmEditContact}>
+                        <DoneIcon />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip title='Cancel'>
+                      <Button variant='flat' color='secondary' className={classes.cancelButton} onClick={this.toggleEditMode}>
+                        <ClearIcon />
+                      </Button>
+                    </Tooltip> 
+                  </Aux>
+                ) : (
+                  <Tooltip title='Edit Contact'>
+                    <Button variant='flat' color='primary' onClick={this.toggleEditMode}>
+                      <EditIcon />
                     </Button>
                   </Tooltip>
-                  <Tooltip title='Cancel'>
-                    <Button variant='flat' color='secondary' className={classes.cancelButton} onClick={this.toggleEditMode}>
-                      <ClearIcon />
-                    </Button>
-                  </Tooltip> 
-                </Aux>
-              ) : (
-                <Button variant='flat' color='primary' onClick={this.toggleEditMode}>
-                  <EditIcon />
-                </Button>
-              )}
+                )
+              ) : ( null )}
               {toggleContactFavorite &&
                 <Tooltip title='Favorite'>
                   <Checkbox
