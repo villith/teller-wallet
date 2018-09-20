@@ -13,7 +13,7 @@ export interface IListBodyProps {
   listType: ListType;
   order?: Order;
   orderBy?: string;
-  handleClick: (event: any, id: string) => void;
+  handleClick: (id: string) => void;
   transactions?: Transaction[];
   user: IUser;
   numRows?: number;

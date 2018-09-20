@@ -1,6 +1,8 @@
 import { CircularProgress, Grid, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as dotenv from 'dotenv';
+import { History, Location } from 'history';
 import * as React from 'react';
+import { match } from 'react-router';
 
 import { Contact } from '../../classes/Contact';
 import { Ledger } from '../../classes/Ledger';
@@ -14,12 +16,13 @@ import SideMenu from '../SideMenu/SideMenu';
 dotenv.config();
 
 export interface IAppProps {
-  placeholder?: string;
+  match: match<any>;
+  history: History;
+  location: Location<any>;
 }
 
 export interface IAppState {
   contacts: Contact[];
-  currentPage: string;
   loading: boolean;
   sideMenuOpen: boolean;
   transactions: Transaction[];
@@ -81,7 +84,6 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
   public state = {
     loading: true,
-    currentPage: '/',
     contacts: [] as Contact[],
     sideMenuOpen: false,
     transactions: [] as Transaction[],
@@ -161,8 +163,8 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
   }
 
   public render() {
-    const { classes } = this.props;
-    const { contacts, currentPage, loading, sideMenuOpen, transactions, user } = this.state;
+    const { classes, location } = this.props;
+    const { contacts, loading, sideMenuOpen, transactions, user } = this.state;
     return (
       <div className={classes.root}>
         <NavBar
@@ -171,6 +173,7 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
         />
         <SideMenu
           closeMenu={this.closeSideMenu}
+          location={location}
           open={sideMenuOpen}
           openMenu={this.openSideMenu}
         />
@@ -179,7 +182,6 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
         ) : (
           <Grid container={true} spacing={16} className={classes.content}>
             <MainContent
-              currentPage={currentPage}
               contacts={contacts}
               transactions={transactions}
               user={user}

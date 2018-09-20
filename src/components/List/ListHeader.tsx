@@ -18,7 +18,7 @@ export interface IListHeaderProps {
   listType: ListType;
   order: Order;
   orderBy: string;
-  onRequestSort: ((event: any, property: any) => void);
+  onRequestSort: (property: any) => void;
   rowCount: number;
   sortable: boolean;
 }
@@ -34,7 +34,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 class ListHeader extends React.Component<WithStyles<any> & IListHeaderProps, IListHeaderState> {
   public createSortHandler = (property: any) => (event: any) => {
     if (this.props.sortable) {
-      this.props.onRequestSort(event, property);
+      this.props.onRequestSort(property);
     }
   }
 

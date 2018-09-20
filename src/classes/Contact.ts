@@ -23,4 +23,11 @@ class Contact {
   }
 }
 
-export { Contact }
+type ContactFilterables = 
+  'address'
+  | 'title'
+  | 'firstName'
+  | 'lastName'
+  | 'favorite';
+
+export { Contact, ContactFilterables }

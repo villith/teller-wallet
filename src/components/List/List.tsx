@@ -15,8 +15,8 @@ export interface IListProps {
   listType: ListType;
   order: Order;
   orderBy: string;
-  handleRequestSort: ((event: any, property: any) => void);
-  handleClick: ((event: any, id: string) => void);
+  handleRequestSort: (property: any) => void;
+  handleClick: (id: string) => void;
   user: IUser;
   numRows?: number;
   sortable: boolean;

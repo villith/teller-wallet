@@ -11,7 +11,7 @@ import { Aux } from '../winAux';
 export interface IAddressBookPageRowProps {
   currentContact: Contact;
   handleSelectRow: (id: string, listType: ListType) => void;
-  toggleContactFavorite: (id: string) => void;
+  toggleContactFavorite?: (id: string) => void;
   user: IUser;
   contacts: Contact[];
   transactions: Transaction[];

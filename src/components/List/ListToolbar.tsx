@@ -1,19 +1,37 @@
-import { StyleRulesCallback, Theme, Toolbar, Typography, WithStyles, withStyles } from '@material-ui/core';
+import {
+  FormControl,
+  IconButton,
+  Input,
+  StyleRulesCallback,
+  Theme,
+  Toolbar,
+  Typography,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
+import { FilterList as FilterListIcon } from '@material-ui/icons';
 import * as React from 'react';
+
+import { IFilter } from './ListContainer';
 
 export interface IListToolbarProps {
   numSelected: number;
   listName: string;
+  filters: IFilter[];
+  filter: boolean;
+  filterBy: string;
+  filterByValue: string;
 }
 
 export interface IListToolbarState {
-  placeholder?: string;
+  filtersVisible: boolean;
 }
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   actions: {
     display: 'flex',
+    float: 'right'
   },
   cancelButton: {
     marginLeft: theme.spacing.unit / 2,
@@ -50,7 +68,26 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 });
 
 class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, IListToolbarState> {
+  public state = {
+    filtersVisible: false
+  }
+
+  public buildFilterInputs = () => {
+    return this.props.filters.map((filter, index) => {
+      return (
+        <FormControl key={index}>
+          <Input />
+        </FormControl>
+      )
+    })
+  }
+
+  public toggleFilters = () => {
+    this.setState(prevState => ({ filtersVisible: !prevState.filtersVisible }));
+  }
+  
   public render() {
+    const { filtersVisible } = this.state;
     const { classes, listName, numSelected } = this.props;
     return (
       <Toolbar>
@@ -65,6 +102,16 @@ class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, I
             </Typography>
           )}
         </div>
+        <div className={classes.action}>
+          <IconButton onClick={this.toggleFilters}>
+            <FilterListIcon />
+          </IconButton>
+        </div>
+        {filtersVisible &&
+          <div className={classes.filters}>
+            {this.buildFilterInputs()}
+          </div>
+        }
       </Toolbar>
     );
   }

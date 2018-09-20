@@ -12,6 +12,7 @@ export interface ICryptoPanicState {
   error: string;
   posts: ICryptoPanicPost[];
   filter: CryptoPanicFilter;
+  isMounted: boolean;
 }
 
 export interface ICryptoPanicResponse {
@@ -87,12 +88,18 @@ class CryptoPanic extends React.Component<WithStyles<any> & ICryptoPanicProps, I
     error: '',
     posts: [] as ICryptoPanicPost[],
     filter: 'hot' as CryptoPanicFilter,
+    isMounted: false
   }
 
   public componentDidMount() {
+    this.setState({ isMounted: true });
     if (this.state.posts.length === 0) {
       this.getPosts(this.state.filter as CryptoPanicFilter);
     }
+  }
+
+  public componentWillUnmount() {
+    this.setState({ isMounted: false });
   }
 
   public getPosts = (filter: CryptoPanicFilter) => {
@@ -106,7 +113,9 @@ class CryptoPanic extends React.Component<WithStyles<any> & ICryptoPanicProps, I
       })
       .then((response: ICryptoPanicResponse) => {
         const { results } = response;
-        this.setState({ posts: results }, () => this.props.handleLoading(false));
+        if (this.state.isMounted) {
+          this.setState({ posts: results }, () => this.props.handleLoading(false));
+        }
     });
 
     request.catch(e => {

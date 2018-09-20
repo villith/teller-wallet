@@ -6,7 +6,7 @@ import ContactDetails from './ContactDetails';
 
 export interface IContactViewProps {
   contact: Contact;
-  toggleContactFavorite: (id: string) => void;
+  toggleContactFavorite?: (id: string) => void;
 }
 
 export interface IContactViewState {

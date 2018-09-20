@@ -17,20 +17,31 @@ import {
   ChevronLeft as ChevronLeftIcon,
   Contacts as ContactsIcon,
   Home as HomeIcon,
+  Send as SendIcon,
 } from '@material-ui/icons';
 import * as classNames from 'classnames';
+import { Location } from 'history';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 export interface ISideMenuProps {
-  closeMenu: (() => void);
+  closeMenu: () => void;
+  location: Location<any>;
   open: boolean;
-  openMenu: (() => void);
+  openMenu: () => void;
 }
 
 export interface ISideMenuState {
   placeholder?: string;
 }
+
+export interface IListItem {
+  linkTo: Pages;
+  icon: JSX.Element;
+  text: string;
+}
+
+export type Pages = '' | 'send' | 'transactions' | 'settings' | 'addressBook';
 
 const drawerWidth = 240;
 
@@ -75,7 +86,49 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   },
 });
 
+const listItems: IListItem[] = [
+  {
+    linkTo: '',
+    icon: <HomeIcon />,
+    text: 'Overview'
+  },
+  {
+    linkTo: 'send',
+    icon: <SendIcon />,
+    text: 'Send'
+  },
+  {
+    linkTo: 'transactions',
+    icon: <AttachMoneyIcon />,
+    text: 'Transactions'
+  },
+  {
+    linkTo: 'addressBook',
+    icon: <ContactsIcon />,
+    text: 'Contacts'
+  }
+];
+
 class SideMenu extends React.Component<WithStyles<any> & ISideMenuProps, ISideMenuState> {
+  public buildListItems = (items: IListItem[]) => {
+    return items.map((item, index) => {
+      const { classes, location } = this.props;
+      const { linkTo, icon, text } = item;
+      return (
+        <Link key={index} to={`/${linkTo}`}>
+          <ListItem
+            button={true}
+            className={classNames(classes.listItem, location.pathname === `/${linkTo}` && classes.selected)}
+          >
+            <ListItemIcon>
+              {icon}
+            </ListItemIcon>
+            <ListItemText primary={text} />
+          </ListItem>
+        </Link>
+      );
+      });
+  }
   public render() {
     const { classes, closeMenu, open } = this.props;
     return (
@@ -93,40 +146,8 @@ class SideMenu extends React.Component<WithStyles<any> & ISideMenuProps, ISideMe
           </IconButton>
         </div>
         <Divider />
-        <List>
-          <Link to='/'>
-            <ListItem
-              button={true}
-              className={classes.listItem}                
-            >
-              <ListItemIcon>
-                <HomeIcon />
-              </ListItemIcon>
-              <ListItemText primary={'Overview'}/>
-            </ListItem>
-          </Link>
-          <Link to='/transactions'>
-            <ListItem
-              button={true}
-              className={classes.listItem}                
-            >
-              <ListItemIcon>
-                <AttachMoneyIcon />
-              </ListItemIcon>
-              <ListItemText primary={'Transactions'}/>
-            </ListItem>
-          </Link>
-          <Link to='/addressBook'>
-            <ListItem
-              button={true}
-              className={classes.listItem}                
-            >
-              <ListItemIcon>
-                <ContactsIcon />
-              </ListItemIcon>
-              <ListItemText primary={'Contacts'}/>
-            </ListItem>
-          </Link>
+        <List>     
+          {this.buildListItems(listItems)};
         </List>
       </Drawer>
     );

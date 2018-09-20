@@ -17,7 +17,7 @@ export interface ITransactionPageProps {
   handleSelectRow: (id: string, listType: ListType) => void;
   transactions: Transaction[];
   user: IUser;
-  toggleContactFavorite: (id: string) => void;
+  toggleContactFavorite?: (id: string) => void;
 }
 
 export interface ITransactionPageRowState {

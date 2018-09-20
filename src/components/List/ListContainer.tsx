@@ -25,6 +25,9 @@ export interface IListContainerState {
   numSelected: number;
   order: Order;
   orderBy: string;
+  filter: boolean;
+  filterBy: string;
+  filterByValue: string;
 }
 
 export interface IListColumn {
@@ -32,6 +35,11 @@ export interface IListColumn {
   numeric: boolean;
   disablePadding: boolean;
   label: string;
+}
+
+export interface IFilter {
+  key: string;
+  type: string;
 }
 
 export type Order = 'asc' | 'desc';
@@ -54,7 +62,10 @@ class ListContainer extends React.Component<WithStyles<any> & IListContainerProp
   public state = {
     numSelected: 0,
     order: 'desc' as Order,
-    orderBy: 'timestamp'
+    orderBy: 'timestamp',
+    filter: false,
+    filterBy: '',
+    filterByValue: ''
   }
 
   public componentWillMount() {
@@ -67,7 +78,7 @@ class ListContainer extends React.Component<WithStyles<any> & IListContainerProp
     }
   }
 
-  public handleRequestSort = (event: any, property: any) => {
+  public handleRequestSort = (property: any) => {
     const orderBy = property;
     let order: Order = 'desc';
 
@@ -78,7 +89,7 @@ class ListContainer extends React.Component<WithStyles<any> & IListContainerProp
     this.setState({ order, orderBy });
   }
 
-  public handleClick = (event: any, id: string) => {
+  public handleClick = (id: string) => {
     this.props.handleSelectRow(id, this.props.listType);
   }
 
@@ -95,8 +106,31 @@ class ListContainer extends React.Component<WithStyles<any> & IListContainerProp
       );
   }
 
+  public handleChangeFilter = (filterBy: string) => {
+    this.setState({ filterBy });
+  }
+
+  public handleChangeFilterValue = (filterByValue: string) => {
+    this.setState({ filterByValue });
+  }
+
+  public buildFilters = () => {
+    const filters: IFilter[] = [];
+    if (this.props.data.length > 0) {
+      const exampleData = this.props.data[0];
+      Object.keys(exampleData).map(key => {
+        const filter: IFilter = {
+          key,
+          type: typeof exampleData[key]
+        }
+        filters.push(filter);
+      });
+    }
+    return filters;
+  }
+
   public render() {
-    const { numSelected, order, orderBy } = this.state;
+    const { numSelected, order, orderBy, filter, filterBy, filterByValue } = this.state;
     const { classes, columns, contacts, currentData, data, listName, listType, sortable, numRows, transactions, user } = this.props;
     const listData = data.sort(this.getSorting(order!, orderBy!));
     return (
@@ -104,6 +138,10 @@ class ListContainer extends React.Component<WithStyles<any> & IListContainerProp
         <ListToolbar
           listName={listName}
           numSelected={numSelected}
+          filters={this.buildFilters()}
+          filter={filter}
+          filterBy={filterBy}
+          filterByValue={filterByValue}
         />
         <List
           listType={listType}

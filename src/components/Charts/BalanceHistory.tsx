@@ -36,9 +36,7 @@ class BalanceHistory extends React.Component<WithStyles<any> & IBalanceHistoryPr
         .map(transaction => {
           const { id, amount, to, timestamp } = transaction;
           const incoming = to === this.props.user.address;
-          console.log(`INCOMING: ${incoming} | AMOUNT: ${amount}`);
           incoming ? balance += amount : balance -= amount;
-          console.log(`BALANCE: ${balance}`);
           const value = [
             timestamp,
             balance

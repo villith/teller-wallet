@@ -14,7 +14,7 @@ export interface IListRowProps {
   currentData: Transaction | Contact;
   listType: ListType;
   data: Transaction | Contact;
-  handleClick: ((event: any, id: string) => void);
+  handleClick: (id: string) => void;
   user: IUser;
   contact?: Contact;
   contacts?: Contact[];
@@ -98,14 +98,17 @@ class ListRow extends React.Component<WithStyles<any> & IListRowProps, IListRowS
     return amountDetails;
   }
 
+  public handleLocalClick = () => {
+    this.props.handleClick(this.props.data.id)
+  }
+
   public render() {
-    const { classes, currentData, data, handleClick } = this.props;
+    const { classes, currentData, data } = this.props;
     const isSelected = data.id === currentData.id;
     return (
       <TableRow
         hover={true}
-        // tslint:disable-next-line:jsx-no-lambda
-        onClick={(event) => handleClick(event, data.id)}
+        onClick={this.handleLocalClick}
         className={classNames(classes.row, isSelected ? classes.selected : '')}
         role={'checkbox'}
         tabIndex={-1}

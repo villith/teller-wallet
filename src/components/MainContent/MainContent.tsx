@@ -9,11 +9,11 @@ import { IUser } from '../../interfaces/User';
 import { ListType } from '../List/ListContainer';
 import AddressBookPage from '../Pages/AddressBookPage';
 import HomePage from '../Pages/HomePage';
+import SendPage from '../Pages/SendPage';
 import SettingsPage from '../Pages/SettingsPage';
 import TransactionPage from '../Pages/TransactionPage';
 
 export interface IMainContentProps {
-  currentPage: string;
   contacts: Contact[];
   transactions: Transaction[];
   user: IUser;
@@ -37,16 +37,24 @@ class MainContent extends React.Component<WithStyles<any> & IMainContentProps, I
 
   public handleSelectRow = (id: string, listType: ListType) => {
     if (listType === 'Transaction') {
-      const index = findById(id, this.props.transactions);
-      const tx = this.props.transactions[index];
-      this.setState({ currentTransaction: tx });
+      this.handleChangeTransaction(id);
     }
 
     if (listType === 'Contact') {
-      const index = findById(id, this.props.contacts);
-      const contact = this.props.contacts[index];
-      this.setState({ currentContact: contact });
+      this.handleChangeContact(id);
     }
+  }
+
+  public handleChangeContact = (id: string) => {
+    const index = findById(id, this.props.contacts);
+    const contact = this.props.contacts[index];
+    this.setState({ currentContact: contact });
+  }
+
+  public handleChangeTransaction = (id: string) => {
+    const index = findById(id, this.props.transactions);
+    const tx = this.props.transactions[index];
+    this.setState({ currentTransaction: tx });
   }
 
   public getTransactionContact = () => {
@@ -97,6 +105,19 @@ class MainContent extends React.Component<WithStyles<any> & IMainContentProps, I
         />
       )
     }
+    const sendPage = () => {
+      return (
+        <SendPage
+          currentTransaction={currentTransaction}
+          currentContact={currentContact}
+          handleSelectRow={this.handleSelectRow}
+          user={user}
+          contacts={contacts}
+          transactions={transactions}
+          handleChangeContact={this.handleChangeContact}
+        />
+      )
+    }
     const transactionPage = () => {
       return (
         <TransactionPage
@@ -123,6 +144,7 @@ class MainContent extends React.Component<WithStyles<any> & IMainContentProps, I
         <Route exact={true} path='/' render={homePage} />
         <Route path='/transactions' render={transactionPage} />
         <Route path='/addressBook' render={addressBookPage} />
+        <Route path='/send' render={sendPage} />
         <Route path='/settings' render={settingsPage} />
       </Switch>
     );

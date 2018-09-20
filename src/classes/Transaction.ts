@@ -13,4 +13,14 @@ class Transaction {
   public local: boolean;
 }
 
-export { Transaction };
+type TransactionFilterables = 
+  'from'
+  | 'to'
+  | 'amount'
+  | 'witnessOne'
+  | 'witnessTwo'
+  | 'partnerOne'
+  | 'partnerTwo'
+  | 'timestamp';
+
+export { Transaction, TransactionFilterables };
