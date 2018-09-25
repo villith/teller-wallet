@@ -12,8 +12,11 @@ import {
 import { Menu as MenuIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import * as classNames from 'classnames';
 import * as React from 'react';
+import CurrencySelect from '../CurrencySelect/CurrencySelect';
 
 export interface INavBarProps {
+  currencyCode: string;
+  handleSelectCurrency: (currencyCode: string) => void;
   sideMenuOpen: boolean;
   toggleSideMenu: (() => void);
 }
@@ -25,10 +28,10 @@ export interface INavBarState {
 const drawerWidth = 240;
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
-  action: {
+  actions: {
+    display: 'flex',
     marginLeft: theme.spacing.unit / 4,
     marginRight: theme.spacing.unit / 4,
-    '-webkit-app-region': 'initial'
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -36,7 +39,6 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-  '-webkit-app-region': 'drag'
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -63,7 +65,6 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   menuButton: {
     marginLeft: 12,
     marginRight: 36,
-    '-webkit-app-region': 'initial'
   },
   hide: {
     display: 'none',
@@ -78,7 +79,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class NavBar extends React.Component<WithStyles<any> & INavBarProps, INavBarState> {
   public render() {
-    const { classes, sideMenuOpen, toggleSideMenu } = this.props;
+    const { classes, currencyCode, handleSelectCurrency, sideMenuOpen, toggleSideMenu } = this.props;
     return (
       <AppBar
         position='absolute'
@@ -96,7 +97,11 @@ class NavBar extends React.Component<WithStyles<any> & INavBarProps, INavBarStat
           <Typography variant='title' color='inherit' className={classes.flex}>
             Teller Wallet
           </Typography>
-          <div className={classes.action}>
+          <div className={classes.actions}>
+            <CurrencySelect
+              currencyCode={currencyCode}
+              handleSelectCurrency={handleSelectCurrency}
+            />
             <Tooltip title='Settings'>
               <IconButton
                 color='inherit'

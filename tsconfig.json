@@ -17,7 +17,10 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+  },
+  "rules": {
+    "jsx-no-lambda": false
   },
   "exclude": [
     "node_modules",

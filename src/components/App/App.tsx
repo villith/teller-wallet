@@ -9,6 +9,7 @@ import { Contact } from '../../classes/Contact';
 import { Ledger } from '../../classes/Ledger';
 import { Transaction } from '../../classes/Transaction';
 import { findById } from '../../helpers/get';
+import { ISettings } from '../../interfaces/Settings';
 import { IUser } from '../../interfaces/User';
 import MainContent from '../MainContent/MainContent';
 import NavBar from '../NavBar/NavBar';
@@ -25,6 +26,7 @@ export interface IAppProps {
 export interface IAppState {
   contacts: Contact[];
   loading: boolean;
+  settings: ISettings;
   sideMenuOpen: boolean;
   transactions: Transaction[];
   user: IUser;
@@ -86,6 +88,7 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
   public state = {
     loading: true,
     contacts: [] as Contact[],
+    settings: {} as ISettings,
     sideMenuOpen: false,
     transactions: [] as Transaction[],
     user: {} as IUser
@@ -142,6 +145,14 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
     });
   }
 
+  public loadSettings = () => {
+    return fetch('settings.json')
+      .then(result => result.json())
+      .then((settings: ISettings) => {
+        this.setState({ settings });
+    });
+  }
+
   public handleEditContact = (contact: Contact) => {
     const { contacts } = this.state;
     const index = findById(contact.id, contacts);
@@ -183,13 +194,22 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
     }
     this.setState({ contacts });
   }
+  
+  public handleSelectCurrency = (currencyCode: string) => {
+    console.log(`[handleSelectCurrency] currencyCode: ${currencyCode}`);
+    const { settings } = this.state;
+    settings.currencyCode = currencyCode;
+    this.setState({ settings });
+  }
 
   public render() {
     const { classes, location } = this.props;
-    const { contacts, loading, sideMenuOpen, transactions, user } = this.state;
+    const { contacts, loading, settings, sideMenuOpen, transactions, user } = this.state;
     return (
       <div className={classes.root}>
         <NavBar
+          currencyCode={settings.currencyCode}
+          handleSelectCurrency={this.handleSelectCurrency}
           sideMenuOpen={sideMenuOpen}
           toggleSideMenu={this.toggleSideMenu}
         />
@@ -207,6 +227,7 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
               contacts={contacts}
               transactions={transactions}
               user={user}
+              handleSelectCurrency={this.handleSelectCurrency}
               toggleContactFavorite={this.toggleContactFavorite}
               handleEditContact={this.handleEditContact}
             />

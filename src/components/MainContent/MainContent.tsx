@@ -19,6 +19,7 @@ export interface IMainContentProps {
   user: IUser;
   toggleContactFavorite: (id: string) => void;
   handleEditContact: (contact: Contact) => void;
+  handleSelectCurrency: (currencyCode: string) => void;
 }
 
 export interface IMainContentState {
