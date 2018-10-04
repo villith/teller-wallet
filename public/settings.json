@@ -1,4 +1,5 @@
 {
   "darkMode": false,
-  "defaultCurrency": "USD"
+  "currencyCode": "CAD",
+  "wallet": 1
 }

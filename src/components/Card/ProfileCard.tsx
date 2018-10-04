@@ -1,6 +1,5 @@
 import {
   Card,
-  CardContent,
   CardMedia,
   Grid,
   IconButton,
@@ -32,12 +31,10 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   address: {
     overflowWrap: 'break-word',
     wordWrap: 'break-word',
-    width: '87.5%'
+    padding: theme.spacing.unit * 1.75,
   },
   addressContainer: {
     backgroundColor: 'rgb(246, 248, 250)',
-    padding: theme.spacing.unit * 1.75,
-    position: 'relative'
   },
   balance: {
     float: 'right',
@@ -55,14 +52,9 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
     overflow: 'hidden'
   },
   copyIcon: {
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    marginRight: '2.5%',
-    marginTop: '2.5%'
-  },
-  content: {
-    maxWidth: '100%'
+    display: 'flex',
+    margin: 'auto',
+    height: '100%'
   },
   mediaContainer: {
     padding: theme.spacing.unit
@@ -73,7 +65,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
     backgroundSize: 'contain !important'
   },
   copyToClipboard: {
-    
+
   }
 });
 
@@ -100,22 +92,26 @@ class ProfileCard extends React.Component<WithStyles<any> & IProfileCardProps, I
               image='icon.png'
             />
           </Grid>
-          <Grid item={true} xs={9}>
-            <CardContent className={classes.content}>
+          <Grid item={true} container={true} xs={9}>
+            <Grid item={true} xs={12}>
               <Typography variant='headline'>{getFullName(user)}</Typography>
-              <div className={classes.addressContainer}>
+            </Grid>
+            <Grid item={true} container={true} xs={12} className={classes.addressContainer}>
+              <Grid item={true} xs={11}>
+                <Typography className={classes.address} variant='caption'>{user.address}</Typography>
+              </Grid>
+              <Grid item={true} xs={1}>
                 <Tooltip title='Copy Address'>
                   <IconButton className={classes.copyIcon} onClick={this.copyToClipboard}>
                     <FileCopyIcon />
                   </IconButton>
                 </Tooltip>
-                <Typography className={classes.address} variant='caption'>{user.address}</Typography>
-              </div>
-              <div className={classes.balance}>
-                <Typography variant='subheading'>BALANCE:&nbsp;<strong>{balance} TEL</strong></Typography>
-                <Typography variant='caption'> ${convertedBalance.toFixed(2)} @ ${conversionRate}</Typography>
-              </div>
-            </CardContent>
+              </Grid>
+            </Grid>
+            <Grid item={true} xs={12} className={classes.balance}>
+              <Typography variant='subheading'>BALANCE:&nbsp;<strong>{balance} TEL</strong></Typography>
+              <Typography variant='caption'> ${convertedBalance.toFixed(2)} @ ${conversionRate}</Typography>
+            </Grid>
           </Grid>
         </Grid>
       </Card>

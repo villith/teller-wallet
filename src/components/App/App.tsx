@@ -1,4 +1,4 @@
-import { CircularProgress, Grid, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
+import { CircularProgress, Grid, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';;
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import { History, Location } from 'history';
@@ -9,6 +9,7 @@ import { Contact } from '../../classes/Contact';
 import { Ledger } from '../../classes/Ledger';
 import { Transaction } from '../../classes/Transaction';
 import { findById } from '../../helpers/get';
+import { web3 } from '../../helpers/web3';
 import { ISettings } from '../../interfaces/Settings';
 import { IUser } from '../../interfaces/User';
 import MainContent from '../MainContent/MainContent';
@@ -30,6 +31,9 @@ export interface IAppState {
   sideMenuOpen: boolean;
   transactions: Transaction[];
   user: IUser;
+  wallet: {
+    balance: any;
+  }
 }
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
@@ -91,10 +95,13 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
     settings: {} as ISettings,
     sideMenuOpen: false,
     transactions: [] as Transaction[],
-    user: {} as IUser
+    user: {} as IUser,
+    wallet: {
+      balance: {}
+    }
   }
 
-  public componentDidMount() {
+  public componentWillMount() {
     this.loadContent();
   }
 
@@ -102,9 +109,18 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
     const promiseArray: Array<Promise<void>> = [
       this.loadTransactions(),
       this.loadContacts(),
-      this.loadUser()
+      this.loadUser(),
+      this.loadSettings()
     ];
-    Promise.all(promiseArray).then(() => this.setState({ loading: false }));
+    Promise.all(promiseArray).then(() => this.setState({ loading: false }, () => this.loadBalance()));
+  }
+
+  public loadBalance = () => {
+    const { user, wallet } = this.state;
+    web3.eth.getBalance(user.address).then(result => {
+      wallet.balance = web3.utils.fromWei(result, 'ether');
+      this.setState({ wallet });
+    });
   }
 
   public loadTransactions = () => {
@@ -149,6 +165,7 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
     return fetch('settings.json')
       .then(result => result.json())
       .then((settings: ISettings) => {
+        console.log(settings);
         this.setState({ settings });
     });
   }

@@ -43,6 +43,7 @@ class SendPage extends React.Component<WithStyles<any> & ISendPageProps, ISendPa
             contacts={contacts}
             currentContact={currentContact}
             handleChangeContact={handleChangeContact}
+            user={user}
           />
         </Grid>
         <Grid item={true} xs={4}>

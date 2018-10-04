@@ -68,13 +68,17 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   title: {
     flex: '0 0 auto',
   },
+  titleRow: {
+    display: 'flex',
+    width: '100%'
+  },
   formControl: {
     margin: theme.spacing.unit,
     minWidth: 120
   },
   filters: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   }
 });
 
@@ -105,21 +109,23 @@ class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, I
     const { classes, listName, numSelected } = this.props;
     return (
       <Toolbar>
-        <div className={classes.title}>
-          {numSelected > 0 ? (
-            <Typography color='inherit' variant='subheading'>
-              {numSelected} selected
-            </Typography>
-          ) : (
-            <Typography variant='title' id='tableTitle'>
-              {listName}
-            </Typography>
-          )}
-        </div>
-        <div className={classes.action}>
-          <IconButton onClick={this.toggleFilters}>
-            <FilterListIcon />
-          </IconButton>
+        <div className={classes.titleRow}>
+          <div className={classes.title}>
+            {numSelected > 0 ? (
+              <Typography color='inherit' variant='subheading'>
+                {numSelected} selected
+              </Typography>
+            ) : (
+              <Typography variant='title' id='tableTitle'>
+                {listName}
+              </Typography>
+            )}
+          </div>
+          <div className={classes.actions}>
+            <IconButton onClick={this.toggleFilters}>
+              <FilterListIcon />
+            </IconButton>
+          </div>
         </div>
         {filtersVisible &&
           <div className={classes.filters}>

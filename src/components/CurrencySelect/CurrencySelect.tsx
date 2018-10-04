@@ -34,9 +34,8 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
     flexGrow: 1,
     position: 'relative',
   },
-  inputRoot: {
-    color: 'white',
-    width: 'auto'
+  input: {
+    color: 'white !important',
   },
   paper: {
     position: 'absolute',
@@ -50,11 +49,15 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   menuItem: {
     display: 'flex',
   },
-  symbol: {
-    float: 'left'
+  inputSymbol: {
+    marginRight: theme.spacing.unit
   },
   label: {
-    float: 'right'
+    right: theme.spacing.unit,
+    position: "absolute",
+  },
+  MuiTypography: {
+    color: 'white'
   }
 });
 
@@ -105,16 +108,12 @@ class CurrencySelect extends React.Component<WithStyles<any> & ICurrencySelectPr
           return (
             <div className={classes.container}>
               <div className={classes.input}>
-                {symbols(currencyCode)}
+                <Typography style={{ color: 'white' }} variant='caption'>Currency</Typography>
+                <span className={classes.inputSymbol}>{symbols(currencyCode)}</span>
                 <TextField
                   {...getInputProps()}
-                  InputProps={{
-                    classes: {
-                      root: classes.inputRoot,
-                    },
-                  }}
                 />
-                <ArrowDropDownIcon onClick={() => setState(prevState => ({ isOpen: !prevState.isOpen }))}/>
+                <span><ArrowDropDownIcon onClick={() => setState(prevState => ({ isOpen: !prevState.isOpen }))}/></span>
               </div>
               <div {...getMenuProps()}>
                 {isOpen && (
@@ -140,8 +139,8 @@ class CurrencySelect extends React.Component<WithStyles<any> & ICurrencySelectPr
                           key={index}
                           className={classes.menuItem}
                         >
-                          <div className={classes.symbol}><Typography align='left' variant='caption'>{symbol}</Typography></div>
-                          <div className={classes.label}><Typography align='right'>{name}</Typography></div>
+                          <Typography variant='caption'>{symbol}</Typography>
+                          <Typography className={classes.label} align='right'>{name}</Typography>                          
                         </MenuItem>
                       )
                   })}

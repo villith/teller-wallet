@@ -14,20 +14,28 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
+import { Tx } from 'web3/eth/types';
 
 import { Contact } from '../../classes/Contact';
 import { getFullName } from '../../helpers/utils';
+import { web3 } from '../../helpers/web3';
+import { IUser } from '../../interfaces/User';
 import ContactDetails from '../Contact/ContactDetails';
 import { Aux } from '../winAux';
 
+// @ts-ignore
 export interface ISendFormProps {
   contacts: Contact[];
   currentContact: Contact;
   handleChangeContact: (id: string) => void;
+  user: IUser;
 }
 
 export interface ISendFormState {
-  [index: string]: string;
+  amount: number;
+  gas: number;
+  gasPrice: number;
+  error: Error;
 }
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
@@ -49,8 +57,12 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class SendForm extends React.Component<WithStyles<any> & ISendFormProps, ISendFormState> {
   public state = {
-    address: '',
+    amount: 0,
+    gas: 0,
+    gasPrice: 0,
+    error: {} as Error
   }
+
   public buildContactSelect = () => {
     const { contacts } = this.props;
     return contacts.map((contact, index) => {
@@ -60,12 +72,27 @@ class SendForm extends React.Component<WithStyles<any> & ISendFormProps, ISendFo
     });
   }
 
-  public handleFormChange = (event: any) => {
-    this.setState({ [event.target.name]: event.target.value });
-  }
-
   public changeContact = (event: any) => {
     this.props.handleChangeContact(event.target.value);
+  }
+
+  public changeAmount = (event: any) => {
+    this.setState({ amount: event.target.value });
+  }
+
+  public sendEth = () => {
+    const { amount, gas, gasPrice } = this.state;
+    const { currentContact, user } = this.props;
+    const transactionObject: Tx = {
+      from: user.address,
+      to: currentContact.address,
+      value: amount,
+      gas,
+      gasPrice
+    };
+    web3.eth.sendTransaction(transactionObject, (error: any) => {
+      this.setState({ error });
+    })
   }
 
   public render() {
@@ -102,7 +129,7 @@ class SendForm extends React.Component<WithStyles<any> & ISendFormProps, ISendFo
                   />
                 </FormControl>
                 <FormControl className={classes.formControl}>
-                  <Button className={classes.submitButton} size='large' variant='contained' color='primary'>
+                  <Button className={classes.submitButton} size='large' variant='contained' color='primary' onClick={this.sendEth}>
                     SEND
                   </Button>
                 </FormControl>
