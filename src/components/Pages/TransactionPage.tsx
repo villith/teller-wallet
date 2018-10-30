@@ -79,6 +79,8 @@ class TransactionPageRow extends React.Component<WithStyles<any> & ITransactionP
           listName={'Transaction List'}
           sortable={true}
           contacts={contacts}
+          placeholderImage={'list.svg'}
+          placeholderText={'No Transactions Found'}
         />
       </Grid>
     </Aux>

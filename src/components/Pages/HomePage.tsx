@@ -85,6 +85,8 @@ class HomePageRow extends React.Component<WithStyles<any> & IHomePageRowProps, I
               numRows={5}
               sortable={false}
               contacts={contacts}
+              placeholderImage={'list.svg'}
+              placeholderText={'No Transactions Found'}
             />
           </Grid>
         </Grid>

@@ -58,6 +58,8 @@ class SendPage extends React.Component<WithStyles<any> & ISendPageProps, ISendPa
             sortable={true}
             transactions={transactions}
             contacts={contacts}
+            placeholderImage={'list.svg'}
+            placeholderText={'No Transactions Found'}
           />
         </Grid>
       </Aux>

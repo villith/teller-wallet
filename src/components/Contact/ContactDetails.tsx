@@ -27,6 +27,7 @@ import { Link } from 'react-router-dom';
 
 import { Contact } from '../../classes/Contact';
 import { getFullName } from '../../helpers/utils';
+import Placeholder from '../Placeholder/Placeholder';
 import { Aux } from '../winAux';
 
 export interface IContactDetailsProps {
@@ -81,20 +82,6 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   },
   textField: {
   },
-  placeholder: {
-    opacity: 0.25,
-    display: 'flex',
-    flexDirection: 'column',
-    alignContent: 'center',
-    textAlign: 'center',
-    padding: theme.spacing.unit
-  },
-  placeholderImage: {
-    height: '50%',
-    width: '50%',
-    margin: 'auto',
-    padding: theme.spacing.unit * 2
-  }
 });
 
 class ContactDetails extends React.Component<WithStyles<any> & IContactDetailsProps, IContactDetailsState> {
@@ -213,10 +200,10 @@ class ContactDetails extends React.Component<WithStyles<any> & IContactDetailsPr
               </Grid>
             </Aux>
           ) : (
-            <div className={classes.placeholder}>
-              <img src='plane.svg' className={classes.placeholderImage} />
-              <Typography variant='headline'>No Contact Selected</Typography>
-            </div>
+            <Placeholder
+              imgSrc='plane.svg'
+              title='No Contact Selected'
+            />
           )}
         </CardContent>
       </Card>

@@ -1,7 +1,7 @@
 import { Contact } from '../classes/Contact';
 import { Transaction } from '../classes/Transaction';
 import { IUser } from '../interfaces/User';
-import { findByPublicKey } from './get';
+import { findById, findByPublicKey } from './get';
 
 const getFullName = (person: Contact | IUser) => {
   const { title, firstName, lastName } = person;
@@ -54,10 +54,30 @@ const getBalanceArray = (transactions: Transaction[], publicKey: string) => {
   return balanceArray;
 }
 
-const getContact = (contacts: Contact[] | undefined, publicKey: string) => {
-  if (!contacts) { return undefined; }
+const getContactByPublicKey = (contacts: Contact[] | undefined, publicKey: string | undefined) => {
+  if (!contacts) { 
+    console.log('[getContactByPublicKey] contacts undef');
+    return undefined;
+  }
+  if (!publicKey) {
+    console.log('[getContactByPublicKey] publicKey undef');
+    return undefined;
+  }
   const index = findByPublicKey(publicKey, contacts);
   return index === -1 ? undefined : contacts[index];
 }
 
-export { getBalance, getBalanceArray, getBalanceByTransaction, getContact, getFullName };
+const getContactById = (contacts: Contact[] | undefined, id: string | undefined) => {
+  if (!contacts) { 
+    console.log('[getContactById] contacts undef');
+    return undefined;
+  }
+  if (!id) {
+    console.log('[getContactById] id undef');
+    return undefined;
+  }
+  const index = findById(id, contacts);
+  return index === -1 ? undefined : contacts[index];
+}
+
+export { getBalance, getBalanceArray, getBalanceByTransaction, getContactByPublicKey, getContactById, getFullName };

@@ -1,6 +1,6 @@
 import { StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as React from 'react';
-import { Route, Switch } from 'react-router';
+import { Route, RouteComponentProps, StaticContext, Switch } from 'react-router';
 
 import { Contact } from '../../classes/Contact';
 import { Transaction } from '../../classes/Transaction';
@@ -95,16 +95,20 @@ class MainContent extends React.Component<WithStyles<any> & IMainContentProps, I
         />
       )
     }
-    const addressBookPage = () => {
+    const addressBookPage = (props: RouteComponentProps<any, StaticContext, any>) => {
+      const { id } = props.match.params;
       return (
         <AddressBookPage
           currentContact={currentContact}
+          currentTransaction={currentTransaction}
+          handleChangeContact={this.handleChangeContact}
           handleSelectRow={this.handleSelectRow}
           toggleContactFavorite={toggleContactFavorite}
           user={user}
           contacts={contacts}
           transactions={transactions}
           handleEditContact={handleEditContact}
+          linkId={id}
         />
       )
     }
@@ -146,7 +150,7 @@ class MainContent extends React.Component<WithStyles<any> & IMainContentProps, I
       <Switch>
         <Route exact={true} path='/' render={homePage} />
         <Route path='/transactions' render={transactionPage} />
-        <Route path='/addressBook' render={addressBookPage} />
+        <Route path='/addressBook/:id?' render={(props) => addressBookPage(props)} />
         <Route path='/send' render={sendPage} />
         <Route path='/settings' render={settingsPage} />
       </Switch>

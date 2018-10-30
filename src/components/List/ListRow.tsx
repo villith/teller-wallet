@@ -2,10 +2,11 @@ import { StyleRulesCallback, TableCell, TableRow, Theme, WithStyles, withStyles 
 import * as classNames from 'classnames';
 import * as moment from 'moment';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 import { Contact } from '../../classes/Contact';
 import { Transaction } from '../../classes/Transaction';
-import { getContact } from '../../helpers/utils';
+import { getContactByPublicKey } from '../../helpers/utils';
 import { IUser } from '../../interfaces/User';
 import { Aux } from '../winAux';
 import { ListType } from './ListContainer';
@@ -51,17 +52,23 @@ class ListRow extends React.Component<WithStyles<any> & IListRowProps, IListRowS
       const incoming = tx.to === user.address;
       const amountDetails = this.getAmountDetails();
       const contactKey = incoming ? tx.from : tx.to;
-      const contact = getContact(contacts, contactKey);
+      const contact = getContactByPublicKey(contacts, contactKey);
       return (
         <Aux>
           <TableCell className={classes.cell}>
             {moment(tx.timestamp).format('MMM DD, YY - HH:mm:ss')}
           </TableCell>
-          <TableCell className={classes.cell}>
-            {contact ? `${contact.firstName} ${contact.lastName}`
-              : incoming ? tx.from : tx.to
-            }
-          </TableCell>
+          {contact ? (
+            <TableCell className={classes.cell}>
+              <Link to={`/addressBook/${contact.id}`} className={classes.link}>
+                {contact.firstName} {contact.lastName}
+              </Link>
+            </TableCell>
+          ) : (
+              <TableCell className={classes.cell}>
+                {incoming ? tx.from : tx.to}
+              </TableCell>
+            )}
           <TableCell numeric={true} className={classes.cell} style={{ color: amountDetails.color }}>
             {amountDetails.sign}{tx.amount}
           </TableCell>

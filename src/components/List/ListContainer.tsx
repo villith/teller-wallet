@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Contact } from '../../classes/Contact';
 import { Transaction } from '../../classes/Transaction';
 import { IUser } from '../../interfaces/User';
+import Placeholder from '../Placeholder/Placeholder';
 import List from './List';
 import ListToolbar from './ListToolbar';
 
@@ -19,6 +20,8 @@ export interface IListContainerProps {
   numRows?: number;
   transactions?: Transaction[];
   contacts?: Contact[];
+  placeholderImage: string;
+  placeholderText: string;
 }
 
 export interface IListContainerState {
@@ -131,7 +134,7 @@ class ListContainer extends React.Component<WithStyles<any> & IListContainerProp
 
   public render() {
     const { numSelected, order, orderBy, filter, filterBy, filterByValue } = this.state;
-    const { classes, columns, contacts, currentData, data, listName, listType, sortable, numRows, transactions, user } = this.props;
+    const { classes, columns, contacts, currentData, data, listName, listType, placeholderImage, placeholderText, sortable, numRows, transactions, user } = this.props;
     const listData = data.sort(this.getSorting(order!, orderBy!));
     return (
       <Paper className={classes.root}>
@@ -144,21 +147,28 @@ class ListContainer extends React.Component<WithStyles<any> & IListContainerProp
           filterBy={filterBy}
           filterByValue={filterByValue}
         />
-        <List
-          listType={listType}
-          columns={columns}
-          order={order}
-          orderBy={orderBy}
-          handleRequestSort={this.handleRequestSort}
-          handleClick={this.handleClick}
-          currentData={currentData}
-          numRows={numRows}
-          data={listData}
-          user={user}
-          sortable={sortable}
-          transactions={transactions}
-          contacts={contacts}
-        />
+        {data.length > 0 ? (
+          <List
+            listType={listType}
+            columns={columns}
+            order={order}
+            orderBy={orderBy}
+            handleRequestSort={this.handleRequestSort}
+            handleClick={this.handleClick}
+            currentData={currentData}
+            numRows={numRows}
+            data={listData}
+            user={user}
+            sortable={sortable}
+            transactions={transactions}
+            contacts={contacts}
+          />
+        ) : (
+          <Placeholder
+            imgSrc={placeholderImage}
+            title={placeholderText}
+          />
+        )}
       </Paper>
     );
   }
