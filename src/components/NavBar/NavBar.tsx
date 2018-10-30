@@ -4,14 +4,14 @@ import {
   StyleRulesCallback,
   Theme,
   Toolbar,
-  Tooltip,
   Typography,
   WithStyles,
   withStyles,
 } from '@material-ui/core';
-import { Menu as MenuIcon, Settings as SettingsIcon } from '@material-ui/icons';
+import { Menu as MenuIcon } from '@material-ui/icons';
 import * as classNames from 'classnames';
 import * as React from 'react';
+
 import CurrencySelect from '../CurrencySelect/CurrencySelect';
 
 export interface INavBarProps {
@@ -102,14 +102,6 @@ class NavBar extends React.Component<WithStyles<any> & INavBarProps, INavBarStat
               currencyCode={currencyCode}
               handleSelectCurrency={handleSelectCurrency}
             />
-            <Tooltip title='Settings'>
-              <IconButton
-                color='inherit'
-                aria-label='Settings'
-              >
-                <SettingsIcon />
-              </IconButton>
-            </Tooltip>
           </div>
         </Toolbar>
       </AppBar>

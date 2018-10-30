@@ -16,8 +16,11 @@ import {
   AttachMoney as AttachMoneyIcon,
   ChevronLeft as ChevronLeftIcon,
   Contacts as ContactsIcon,
+  Help as HelpIcon,
   Home as HomeIcon,
+  Info as InfoIcon,
   Send as SendIcon,
+  Settings as SettingsIcon,
 } from '@material-ui/icons';
 import * as classNames from 'classnames';
 import { Location } from 'history';
@@ -39,9 +42,10 @@ export interface IListItem {
   linkTo: Pages;
   icon: JSX.Element;
   text: string;
+  align?: 'bottom' | 'default';
 }
 
-export type Pages = '' | 'send' | 'transactions' | 'settings' | 'addressBook';
+export type Pages = '' | 'send' | 'transactions' | 'settings' | 'addressBook' | 'help' | 'info';
 
 const drawerWidth = 240;
 
@@ -84,6 +88,14 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
     padding: '0 8px',
     ...theme.mixins.toolbar,
   },
+  alignBottom: {
+    marginTop: 'auto'
+  },
+  drawerList: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+  }
 });
 
 const listItems: IListItem[] = [
@@ -106,6 +118,22 @@ const listItems: IListItem[] = [
     linkTo: 'addressBook',
     icon: <ContactsIcon />,
     text: 'Contacts'
+  },
+  {
+    linkTo: 'settings',
+    icon: <SettingsIcon />,
+    text: 'Settings',
+    align: 'bottom'
+  },
+  {
+    linkTo: 'help',
+    icon: <HelpIcon />,
+    text: 'Help',
+  },
+  {
+    linkTo: 'info',
+    icon: <InfoIcon />,
+    text: 'Info',
   }
 ];
 
@@ -113,9 +141,10 @@ class SideMenu extends React.Component<WithStyles<any> & ISideMenuProps, ISideMe
   public buildListItems = (items: IListItem[]) => {
     return items.map((item, index) => {
       const { classes, location } = this.props;
-      const { linkTo, icon, text } = item;
+      const { align, linkTo, icon, text } = item;
+      const alignmentClass = align && align === 'bottom' ? classes.alignBottom : undefined;
       return (
-        <Link key={index} to={`/${linkTo}`}>
+        <Link className={alignmentClass} key={index} to={`/${linkTo}`}>
           <ListItem
             button={true}
             className={classNames(classes.listItem, location.pathname === `/${linkTo}` && classes.selected)}
@@ -146,7 +175,7 @@ class SideMenu extends React.Component<WithStyles<any> & ISideMenuProps, ISideMe
           </IconButton>
         </div>
         <Divider />
-        <List>     
+        <List className={classes.drawerList}>     
           {this.buildListItems(listItems)};
         </List>
       </Drawer>

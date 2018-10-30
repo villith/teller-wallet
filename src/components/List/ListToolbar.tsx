@@ -1,20 +1,11 @@
-import {
-  FormControl,
-  IconButton,
-  Input,
-  StyleRulesCallback,
-  Theme,
-  Toolbar,
-  Typography,
-  WithStyles,
-  withStyles,
-} from '@material-ui/core';
-import InputLabel from '@material-ui/core/InputLabel';
+import { IconButton, StyleRulesCallback, Theme, Toolbar, Typography, WithStyles, withStyles } from '@material-ui/core';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import { FilterList as FilterListIcon } from '@material-ui/icons';
 import * as React from 'react';
 
 import { TransactionFilterables } from '../../classes/Transaction';
+import FilterInput from '../Input/FilterInput';
+import { Aux } from '../winAux';
 import { IFilter, ListType } from './ListContainer';
 
 export interface IListToolbarProps {
@@ -33,8 +24,8 @@ export interface IListToolbarState {
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   actions: {
-    display: 'flex',
-    float: 'right'
+    position: 'absolute',
+    right: 0
   },
   cancelButton: {
     marginLeft: theme.spacing.unit / 2,
@@ -70,7 +61,8 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   },
   titleRow: {
     display: 'flex',
-    width: '100%'
+    width: '100%',
+    flexWrap: 'wrap'
   },
   formControl: {
     margin: theme.spacing.unit,
@@ -79,6 +71,8 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   filters: {
     display: 'flex',
     flexWrap: 'wrap',
+    paddingLeft: theme.spacing.unit * 2,
+    paddingRight: theme.spacing.unit * 2
   }
 });
 
@@ -88,14 +82,10 @@ class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, I
   }
 
   public buildFilterInputs = () => {
-    const { classes } = this.props;
     return this.props.filters.filter(filter => filter.key in TransactionFilterables)
       .map((filter, index) => {
         return (
-          <FormControl className={classes.formControl} key={index}>
-            <InputLabel htmlFor={`filter-${filter.key}`}>{`${filter.key.charAt(0).toUpperCase()}${filter.key.substr(1)}`}</InputLabel>
-            <Input />
-          </FormControl>
+          <FilterInput key={index} filter={filter} />
         )
     })
   }
@@ -108,31 +98,33 @@ class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, I
     const { filtersVisible } = this.state;
     const { classes, listName, numSelected } = this.props;
     return (
-      <Toolbar>
-        <div className={classes.titleRow}>
-          <div className={classes.title}>
-            {numSelected > 0 ? (
-              <Typography color='inherit' variant='subheading'>
-                {numSelected} selected
-              </Typography>
-            ) : (
-              <Typography variant='title' id='tableTitle'>
-                {listName}
-              </Typography>
-            )}
+      <Aux>
+        <Toolbar>
+          <div className={classes.titleRow}>
+            <div className={classes.title}>
+              {numSelected > 0 ? (
+                <Typography color='inherit' variant='subheading'>
+                  {numSelected} selected
+                </Typography>
+              ) : (
+                <Typography variant='title' id='tableTitle'>
+                  {listName}
+                </Typography>
+              )}
+            </div>
           </div>
           <div className={classes.actions}>
             <IconButton onClick={this.toggleFilters}>
               <FilterListIcon />
             </IconButton>
           </div>
-        </div>
+        </Toolbar>
         {filtersVisible &&
           <div className={classes.filters}>
             {this.buildFilterInputs()}
           </div>
         }
-      </Toolbar>
+      </Aux>
     );
   }
 }

@@ -80,7 +80,20 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
     }
   },
   textField: {
-
+  },
+  placeholder: {
+    opacity: 0.25,
+    display: 'flex',
+    flexDirection: 'column',
+    alignContent: 'center',
+    textAlign: 'center',
+    padding: theme.spacing.unit
+  },
+  placeholderImage: {
+    height: '50%',
+    width: '50%',
+    margin: 'auto',
+    padding: theme.spacing.unit * 2
   }
 });
 
@@ -115,87 +128,96 @@ class ContactDetails extends React.Component<WithStyles<any> & IContactDetailsPr
     return (
       <Card>
         <CardContent>
-          <div className={classes.cardHeader}>
-            <div className={classes.cardIcon}>
-              <div dangerouslySetInnerHTML={{ __html: svg }} />
-            </div>
-            {editModeActive ? (
-              <div className={classes.cardTitleEdit}>
-                <TextField
-                  id='title'
-                  value={contact.title}
-                  label='Title'
-                  className={classes.textField}
-                />
-                <TextField
-                  id='firstName'
-                  value={contact.firstName}
-                  label='First Name'
-                  className={classes.textField}
-                />
-                <TextField
-                  id='lastName'
-                  value={contact.lastName}
-                  label='Last Name'
-                  className={classes.textField}
-                />
-              </div>
-            ) : (
-              <Link to='/addressBook' className={classes.cardTitle}>
-                <Typography variant={'display1'}>
-                  {getFullName(contact)}
-                </Typography>
-              </Link>
-            )}
-            <div className={classes.spacer} />
-            <div className={classes.actions}>
-              {handleEditContact ? (
-                editModeActive ? (
-                  <Aux>
-                    <Tooltip title='Confirm Changes'>
-                      <Button variant='flat' className={classes.confirmButton} onClick={this.confirmEditContact}>
-                        <DoneIcon />
+          { contact.id ? (
+            <Aux>
+              <div className={classes.cardHeader}>
+                <div className={classes.cardIcon}>
+                  <div dangerouslySetInnerHTML={{ __html: svg }} />
+                </div>
+                {editModeActive ? (
+                  <div className={classes.cardTitleEdit}>
+                    <TextField
+                      id='title'
+                      value={contact.title}
+                      label='Title'
+                      className={classes.textField}
+                    />
+                    <TextField
+                      id='firstName'
+                      value={contact.firstName}
+                      label='First Name'
+                      className={classes.textField}
+                    />
+                    <TextField
+                      id='lastName'
+                      value={contact.lastName}
+                      label='Last Name'
+                      className={classes.textField}
+                    />
+                  </div>
+                ) : (
+                  <Link to='/addressBook' className={classes.cardTitle}>
+                    <Typography variant={'display1'}>
+                      {getFullName(contact)}
+                    </Typography>
+                  </Link>
+                )}
+                <div className={classes.spacer} />
+                <div className={classes.actions}>
+                  {handleEditContact ? (
+                    editModeActive ? (
+                      <Aux>
+                        <Tooltip title='Confirm Changes'>
+                          <Button variant='flat' className={classes.confirmButton} onClick={this.confirmEditContact}>
+                            <DoneIcon />
+                          </Button>
+                        </Tooltip>
+                        <Tooltip title='Cancel'>
+                          <Button variant='flat' color='secondary' className={classes.cancelButton} onClick={this.toggleEditMode}>
+                            <ClearIcon />
+                          </Button>
+                        </Tooltip> 
+                      </Aux>
+                    ) : (
+                      <Tooltip title='Edit Contact'>
+                        <Button variant='flat' color='primary' onClick={this.toggleEditMode}>
+                          <EditIcon />
+                        </Button>
+                      </Tooltip>
+                    )
+                  ) : ( null )}
+                  {toggleContactFavorite &&
+                    <Tooltip title='Favorite'>
+                      <Checkbox
+                        icon={<FavoriteBorderIcon />}
+                        checkedIcon={<FavoriteIcon />}
+                        checked={contact.favorite}
+                        onClick={this.handleToggleContactFavorite}
+                        color='secondary'
+                      />
+                    </Tooltip>
+                  }
+                  {deleteContact &&
+                    <Tooltip title='Delete'>
+                      <Button variant='flat' color='secondary' className={classes.cancelButton} onClick={this.confirmDeleteContact}>
+                        <DeleteIcon />
                       </Button>
                     </Tooltip>
-                    <Tooltip title='Cancel'>
-                      <Button variant='flat' color='secondary' className={classes.cancelButton} onClick={this.toggleEditMode}>
-                        <ClearIcon />
-                      </Button>
-                    </Tooltip> 
-                  </Aux>
-                ) : (
-                  <Tooltip title='Edit Contact'>
-                    <Button variant='flat' color='primary' onClick={this.toggleEditMode}>
-                      <EditIcon />
-                    </Button>
-                  </Tooltip>
-                )
-              ) : ( null )}
-              {toggleContactFavorite &&
-                <Tooltip title='Favorite'>
-                  <Checkbox
-                    icon={<FavoriteBorderIcon />}
-                    checkedIcon={<FavoriteIcon />}
-                    checked={contact.favorite}
-                    onClick={this.handleToggleContactFavorite}
-                    color='secondary'
-                  />
-                </Tooltip>
-              }
-              {deleteContact &&
-                <Tooltip title='Delete'>
-                  <Button variant='flat' color='secondary' className={classes.cancelButton} onClick={this.confirmDeleteContact}>
-                    <DeleteIcon />
-                  </Button>
-                </Tooltip>
-              }
+                  }
+                </div>
+              </div>
+              <Grid container={true} className={classes.cardBody}>
+                <Typography component='p'>
+                  {contact.description}
+                </Typography>
+              </Grid>
+            </Aux>
+          ) : (
+            <div className={classes.placeholder}>
+              <img src='plane.svg' className={classes.placeholderImage} />
+              <Typography variant='headline'>No Contact Selected</Typography>
             </div>
-          </div>
-          <Grid container={true} className={classes.cardBody}>
-            <Typography component='p'>
-              {contact.description}
-            </Typography>
-          </Grid>
+          )}
         </CardContent>
       </Card>
     );
