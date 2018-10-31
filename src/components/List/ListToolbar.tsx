@@ -2,18 +2,20 @@ import { IconButton, StyleRulesCallback, Theme, Toolbar, Typography, WithStyles,
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import { FilterList as FilterListIcon } from '@material-ui/icons';
 import * as React from 'react';
+import { Contact } from 'src/classes/Contact';
 
-import { TransactionFilterables } from '../../classes/Transaction';
+import { Transaction, TransactionFilterables } from '../../classes/Transaction';
 import FilterInput from '../Input/FilterInput';
 import { Aux } from '../winAux';
 import { IFilter, ListType } from './ListContainer';
 
 export interface IListToolbarProps {
+  data: Array<Transaction | Contact>;
   numSelected: number;
   listName: string;
   listType: ListType;
   filters: IFilter[];
-  filter: boolean;
+  filterable: boolean;
   filterBy: string;
   filterByValue: string;
 }
@@ -82,10 +84,29 @@ class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, I
   }
 
   public buildFilterInputs = () => {
-    return this.props.filters.filter(filter => filter.key in TransactionFilterables)
+    const { data, filters } = this.props;
+    return filters.filter(filter => filter.key in TransactionFilterables)
       .map((filter, index) => {
+        const uniqueMap: { [index: string]: boolean } = {};
+        const filterableData = data.map(item => {
+          return { value: item[filter.key] }
+        })
+        .filter(item => {
+          const { value } = item;
+          if (uniqueMap.hasOwnProperty(item.value)) {
+            return false;
+          }
+          else {
+            uniqueMap[value] = true; 
+            return true;
+          }
+        });
         return (
-          <FilterInput key={index} filter={filter} />
+          <FilterInput
+            key={index}
+            data={filterableData}
+            filter={filter}
+          />
         )
     })
   }
@@ -96,7 +117,7 @@ class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, I
   
   public render() {
     const { filtersVisible } = this.state;
-    const { classes, listName, numSelected } = this.props;
+    const { classes, filterable, listName, numSelected } = this.props;
     return (
       <Aux>
         <Toolbar>
@@ -114,12 +135,14 @@ class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, I
             </div>
           </div>
           <div className={classes.actions}>
-            <IconButton onClick={this.toggleFilters}>
-              <FilterListIcon />
-            </IconButton>
+            { filterable &&
+              <IconButton onClick={this.toggleFilters}>
+                <FilterListIcon />
+              </IconButton>
+            }
           </div>
         </Toolbar>
-        {filtersVisible &&
+        { filtersVisible &&
           <div className={classes.filters}>
             {this.buildFilterInputs()}
           </div>

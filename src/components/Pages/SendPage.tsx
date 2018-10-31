@@ -56,6 +56,7 @@ class SendPage extends React.Component<WithStyles<any> & ISendPageProps, ISendPa
             user={user}
             listName={`Transactions with ${currentContact.firstName} ${currentContact.lastName}`}
             sortable={true}
+            filterable={true}
             transactions={transactions}
             contacts={contacts}
             placeholderImage={'list.svg'}

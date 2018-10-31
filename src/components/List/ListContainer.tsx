@@ -16,6 +16,7 @@ export interface IListContainerProps {
   listName: string;
   user: IUser;
   sortable: boolean;
+  filterable: boolean;
   handleSelectRow: (id: string, listType: ListType) => void;
   numRows?: number;
   transactions?: Transaction[];
@@ -28,7 +29,6 @@ export interface IListContainerState {
   numSelected: number;
   order: Order;
   orderBy: string;
-  filter: boolean;
   filterBy: string;
   filterByValue: string;
 }
@@ -42,11 +42,12 @@ export interface IListColumn {
 
 export interface IFilter {
   key: string;
-  type: string;
+  type: DataType;
 }
 
 export type Order = 'asc' | 'desc';
 export type ListType = 'Transaction' | 'Contact';
+export type DataType = 'number' | 'string' | 'boolean' | 'symbol' | 'undefined' | 'object' | 'function';
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
   root: {
@@ -66,7 +67,6 @@ class ListContainer extends React.Component<WithStyles<any> & IListContainerProp
     numSelected: 0,
     order: 'desc' as Order,
     orderBy: 'timestamp',
-    filter: false,
     filterBy: '',
     filterByValue: ''
   }
@@ -132,9 +132,13 @@ class ListContainer extends React.Component<WithStyles<any> & IListContainerProp
     return filters;
   }
 
+  public applyFilters = () => {
+    
+  }
+
   public render() {
-    const { numSelected, order, orderBy, filter, filterBy, filterByValue } = this.state;
-    const { classes, columns, contacts, currentData, data, listName, listType, placeholderImage, placeholderText, sortable, numRows, transactions, user } = this.props;
+    const { numSelected, order, orderBy, filterBy, filterByValue } = this.state;
+    const { classes, columns, contacts, currentData, data, filterable, listName, listType, placeholderImage, placeholderText, sortable, numRows, transactions, user } = this.props;
     const listData = data.sort(this.getSorting(order!, orderBy!));
     return (
       <Paper className={classes.root}>
@@ -142,8 +146,10 @@ class ListContainer extends React.Component<WithStyles<any> & IListContainerProp
           listName={listName}
           listType={listType}
           numSelected={numSelected}
+          data={data}
+          applyFilters={this.applyFilters}
           filters={this.buildFilters()}
-          filter={filter}
+          filterable={filterable}
           filterBy={filterBy}
           filterByValue={filterByValue}
         />

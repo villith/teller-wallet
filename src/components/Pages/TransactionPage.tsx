@@ -46,7 +46,7 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 class TransactionPageRow extends React.Component<WithStyles<any> & ITransactionPageProps, ITransactionPageRowState> {
   public render() {
     const { classes, contact, currentTransaction, contacts, handleSelectRow, user, toggleContactFavorite, transactions } = this.props;
-    
+
     return (
       <Aux>
         <Grid item={true} xs={6} md={7} className={classes.widgets}>
@@ -56,34 +56,35 @@ class TransactionPageRow extends React.Component<WithStyles<any> & ITransactionP
               user={user}
             />
           }
-        {contact && contact.id &&
-          <ContactView
-            contact={contact}
-            toggleContactFavorite={toggleContactFavorite}
+          {contact && contact.id &&
+            <ContactView
+              contact={contact}
+              toggleContactFavorite={toggleContactFavorite}
+            />
+          }
+          <BalanceHistory
+            transactions={transactions}
+            contacts={contacts}
+            user={user}
           />
-        }
-        <BalanceHistory
-          transactions={transactions}
-          contacts={contacts}
-          user={user}
-        />
-      </Grid>
-      <Grid item={true} xs={6} md={5}>
-        <ListContainer
-          columns={columnData}
-          currentData={currentTransaction}
-          listType={'Transaction'}
-          data={transactions}
-          handleSelectRow={handleSelectRow}
-          user={user}
-          listName={'Transaction List'}
-          sortable={true}
-          contacts={contacts}
-          placeholderImage={'list.svg'}
-          placeholderText={'No Transactions Found'}
-        />
-      </Grid>
-    </Aux>
+        </Grid>
+        <Grid item={true} xs={6} md={5}>
+          <ListContainer
+            columns={columnData}
+            currentData={currentTransaction}
+            listType={'Transaction'}
+            data={transactions}
+            handleSelectRow={handleSelectRow}
+            user={user}
+            listName={'Transaction List'}
+            sortable={true}
+            filterable={true}
+            contacts={contacts}
+            placeholderImage={'list.svg'}
+            placeholderText={'No Transactions Found'}
+          />
+        </Grid>
+      </Aux>
     );
   }
 }

@@ -84,6 +84,7 @@ class HomePageRow extends React.Component<WithStyles<any> & IHomePageRowProps, I
               listName={'Recent Transactions'}
               numRows={5}
               sortable={false}
+              filterable={false}
               contacts={contacts}
               placeholderImage={'list.svg'}
               placeholderText={'No Transactions Found'}

@@ -70,6 +70,7 @@ class AddressBookPage extends React.Component<WithStyles<any> & IAddressBookPage
             user={user}
             listName={'Contacts'}
             sortable={true}
+            filterable={true}
             transactions={transactions}
             placeholderImage={'agenda.svg'}
             placeholderText={'No Contacts Found'}
@@ -85,6 +86,7 @@ class AddressBookPage extends React.Component<WithStyles<any> & IAddressBookPage
             user={user}
             listName={`Transactions with ${currentContact.firstName} ${currentContact.lastName}`}
             sortable={true}
+            filterable={true}
             transactions={transactions}
             contacts={contacts}
             placeholderImage={'list.svg'}

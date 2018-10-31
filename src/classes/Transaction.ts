@@ -17,10 +17,6 @@ enum TransactionFilterables {
   'from',
   'to',
   'amount',
-  'witnessOne',
-  'witnessTwo',
-  'partnerOne',
-  'partnerTwo',
   'timestamp'
 }
 
