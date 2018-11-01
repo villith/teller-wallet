@@ -10,14 +10,13 @@ import { Aux } from '../winAux';
 import { IFilter, ListType } from './ListContainer';
 
 export interface IListToolbarProps {
+  applyFilters: (filter: IFilter, value: any) => void;
   data: Array<Transaction | Contact>;
   numSelected: number;
   listName: string;
   listType: ListType;
   filters: IFilter[];
   filterable: boolean;
-  filterBy: string;
-  filterByValue: string;
 }
 
 export interface IListToolbarState {
@@ -84,7 +83,7 @@ class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, I
   }
 
   public buildFilterInputs = () => {
-    const { data, filters } = this.props;
+    const { applyFilters, data, filters } = this.props;
     return filters.filter(filter => filter.key in TransactionFilterables)
       .map((filter, index) => {
         const uniqueMap: { [index: string]: boolean } = {};
@@ -106,6 +105,7 @@ class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, I
             key={index}
             data={filterableData}
             filter={filter}
+            applyFilters={applyFilters}
           />
         )
     })

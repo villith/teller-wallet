@@ -1,6 +1,5 @@
 import { CircularProgress, Grid, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';;
 import * as dotenv from 'dotenv';
-import * as fs from 'fs';
 import { History, Location } from 'history';
 import * as React from 'react';
 import { match } from 'react-router';
@@ -15,6 +14,8 @@ import { IUser } from '../../interfaces/User';
 import MainContent from '../MainContent/MainContent';
 import NavBar from '../NavBar/NavBar';
 import SideMenu from '../SideMenu/SideMenu';
+
+const fs = window.require('fs');
 
 dotenv.config();
 
@@ -176,15 +177,29 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
     const existingContact = contacts[index];
     if (existingContact) {
       contacts[index] = contact;
-      this.setState({ contacts });
+      this.setState({ contacts }, () => this.saveContacts());
     }
     else {
-      console.log(`Contact with ${contact.id} could not be found.`);
+      console.log(`[handleEditContact] Contact with ${contact.id} could not be found.`);
+    }
+  }
+
+  public handleDeleteContact = (contact: Contact) => {
+    const { contacts } = this.state;
+    const index = findById(contact.id, contacts);
+    const existingContact = contacts[index];
+    if (existingContact) {
+      contacts.splice(index, 1);
+      this.setState({ contacts }, () => this.saveContacts());
+    }
+    else {
+      console.log(`[handleDeleteContact] Contact with ${contact.id} could not be found.`);
     }
   }
 
   public saveContacts = () => {
-    fs.writeFile('contacts.json', this.state.contacts, (err: any) => {
+    const { contacts } = this.state;
+    fs.writeFile('contacts.json', contacts, (err: any) => {
       if (err) { throw err; }
       console.log('Saved contact changes');
     });
@@ -209,9 +224,9 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
     if (contact) {
       contact.favorite = !contact.favorite;
     }
-    this.setState({ contacts });
+    this.setState({ contacts }, () => this.saveContacts());
   }
-  
+
   public handleSelectCurrency = (currencyCode: string) => {
     console.log(`[handleSelectCurrency] currencyCode: ${currencyCode}`);
     const { settings } = this.state;
@@ -247,6 +262,7 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
               handleSelectCurrency={this.handleSelectCurrency}
               toggleContactFavorite={this.toggleContactFavorite}
               handleEditContact={this.handleEditContact}
+              handleDeleteContact={this.handleDeleteContact}
             />
           </Grid>
         )}

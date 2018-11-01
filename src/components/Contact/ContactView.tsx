@@ -7,6 +7,7 @@ import ContactDetails from './ContactDetails';
 export interface IContactViewProps {
   contact: Contact;
   handleEditContact?: (contact: Contact) => void;
+  handleDeleteContact?: (contact: Contact) => void;
   toggleContactFavorite?: (id: string) => void;
 }
 
@@ -26,13 +27,14 @@ const styles: StyleRulesCallback<any> = (theme: Theme) => ({
 
 class ContactView extends React.Component<WithStyles<any> & IContactViewProps, IContactViewState> {
   public render() {
-    const { classes, contact, handleEditContact, toggleContactFavorite } = this.props;
+    const { classes, contact, handleDeleteContact, handleEditContact, toggleContactFavorite } = this.props;
     return (
       <Paper className={classes.root}>
         <ContactDetails
           contact={contact}
           toggleContactFavorite={toggleContactFavorite}
           handleEditContact={handleEditContact}
+          handleDeleteContact={handleDeleteContact}
         />
       </Paper>
     );

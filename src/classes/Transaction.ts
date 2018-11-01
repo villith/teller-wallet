@@ -14,10 +14,10 @@ class Transaction {
 }
 
 enum TransactionFilterables {
-  'from',
-  'to',
-  'amount',
-  'timestamp'
+  from = 'from',
+  to = 'to',
+  amount = 'amount',
+  timestamp = 'timestamp'
 }
 
 export { Transaction, TransactionFilterables };

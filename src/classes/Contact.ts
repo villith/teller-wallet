@@ -23,11 +23,12 @@ class Contact {
   }
 }
 
-type ContactFilterables = 
-  'address'
-  | 'title'
-  | 'firstName'
-  | 'lastName'
-  | 'favorite';
+enum ContactFilterables {
+  address = 'address',
+  title = 'title',
+  firstName = 'firstName',
+  lastName = 'lastName',
+  favorite = 'favorite'
+};
 
 export { Contact, ContactFilterables }

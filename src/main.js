@@ -7,8 +7,14 @@ const { app, BrowserWindow } = electron;
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+let loading;
 
 const createWindow = () => {
+    loading = new BrowserWindow({
+        frame: false,
+        height: 300,
+        width: 200
+    });
     // Create the browser window.
     mainWindow = new BrowserWindow({
         autoHideMenuBar: true,
@@ -16,8 +22,9 @@ const createWindow = () => {
         height: 800,
         minHeight: 800,
         minWidth: 1280,
+        show: false,
         title: 'Teller Wallet',
-        width: 1280,
+        width: 1280,        
     });
 
     const startUrl = process.env.ELECTRON_START_URL || url.format({
@@ -25,12 +32,22 @@ const createWindow = () => {
       protocol: 'file:',
       slashes: true
     });
+
+    const loadingUrl = process.env.ELECTRON_LOADING_URL || url.format({
+        pathname: path.join(__dirname, '/../build/loading.html'),
+        protocol: 'file:',
+        slashes: true
+    });
+
+    loading.loadURL(loadingUrl);
     mainWindow.loadURL(startUrl);
     mainWindow.once('ready-to-show', () => {
-        win.show();
+        mainWindow.show();
+        loading.hide();
+        loading.close();
     });
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 
     mainWindow.webContents.on('new-window', (event, windowUrl) => {
         event.preventDefault();

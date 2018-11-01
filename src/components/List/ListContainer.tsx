@@ -1,10 +1,11 @@
 import { Paper, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as React from 'react';
 
-import { Contact } from '../../classes/Contact';
-import { Transaction } from '../../classes/Transaction';
+import { Contact, ContactFilterables } from '../../classes/Contact';
+import { Transaction, TransactionFilterables } from '../../classes/Transaction';
 import { IUser } from '../../interfaces/User';
 import Placeholder from '../Placeholder/Placeholder';
+import { Aux } from '../winAux';
 import List from './List';
 import ListToolbar from './ListToolbar';
 
@@ -29,8 +30,7 @@ export interface IListContainerState {
   numSelected: number;
   order: Order;
   orderBy: string;
-  filterBy: string;
-  filterByValue: string;
+  filters: IFilterMap;
 }
 
 export interface IListColumn {
@@ -39,6 +39,8 @@ export interface IListColumn {
   disablePadding: boolean;
   label: string;
 }
+
+type IFilterMap = { [key in (TransactionFilterables | ContactFilterables)]: any; }
 
 export interface IFilter {
   key: string;
@@ -67,8 +69,7 @@ class ListContainer extends React.Component<WithStyles<any> & IListContainerProp
     numSelected: 0,
     order: 'desc' as Order,
     orderBy: 'timestamp',
-    filterBy: '',
-    filterByValue: ''
+    filters: {} as IFilterMap
   }
 
   public componentWillMount() {
@@ -109,14 +110,6 @@ class ListContainer extends React.Component<WithStyles<any> & IListContainerProp
       );
   }
 
-  public handleChangeFilter = (filterBy: string) => {
-    this.setState({ filterBy });
-  }
-
-  public handleChangeFilterValue = (filterByValue: string) => {
-    this.setState({ filterByValue });
-  }
-
   public buildFilters = () => {
     const filters: IFilter[] = [];
     if (this.props.data.length > 0) {
@@ -132,43 +125,61 @@ class ListContainer extends React.Component<WithStyles<any> & IListContainerProp
     return filters;
   }
 
-  public applyFilters = () => {
-    
+  public applyFilters = (filter: IFilter, value: any) => {
+    const { filters } = this.state;
+    filters[filter.key] = value;
+    this.setState({ filters });
+  }
+
+  public filterListData = (listData: Array<Transaction | Contact>) => {
+    const { filters } = this.state;
+    const { listType } = this.props;
+    const filterables = listType === 'Transaction' ? TransactionFilterables : ContactFilterables;
+    const filteredListData = listData.filter(item => {
+      return Object.keys(filters)
+        .filter(filter => filter in filterables)
+        .map(key => {
+          const value = filters[key];
+          return item[key].includes(value);
+        });
+      });
+    return filteredListData;      
   }
 
   public render() {
-    const { numSelected, order, orderBy, filterBy, filterByValue } = this.state;
+    const { numSelected, order, orderBy } = this.state;
     const { classes, columns, contacts, currentData, data, filterable, listName, listType, placeholderImage, placeholderText, sortable, numRows, transactions, user } = this.props;
     const listData = data.sort(this.getSorting(order!, orderBy!));
+    const filteredData = this.filterListData(listData);
     return (
       <Paper className={classes.root}>
-        <ListToolbar
-          listName={listName}
-          listType={listType}
-          numSelected={numSelected}
-          data={data}
-          applyFilters={this.applyFilters}
-          filters={this.buildFilters()}
-          filterable={filterable}
-          filterBy={filterBy}
-          filterByValue={filterByValue}
-        />
         {data.length > 0 ? (
-          <List
-            listType={listType}
-            columns={columns}
-            order={order}
-            orderBy={orderBy}
-            handleRequestSort={this.handleRequestSort}
-            handleClick={this.handleClick}
-            currentData={currentData}
-            numRows={numRows}
-            data={listData}
-            user={user}
-            sortable={sortable}
-            transactions={transactions}
-            contacts={contacts}
-          />
+          <Aux>
+            <ListToolbar
+              listName={listName}
+              listType={listType}
+              numSelected={numSelected}
+              data={data}
+              applyFilters={this.applyFilters}
+              filters={this.buildFilters()}
+              filterable={filterable}
+            />
+            <List
+              listType={listType}
+              columns={columns}
+              order={order}
+              orderBy={orderBy}
+              handleRequestSort={this.handleRequestSort}
+              handleClick={this.handleClick}
+              currentData={currentData}
+              numRows={numRows}
+              data={filteredData}
+              user={user}
+              sortable={sortable}
+              transactions={transactions}
+              contacts={contacts}
+            />
+          </Aux>
         ) : (
           <Placeholder
             imgSrc={placeholderImage}

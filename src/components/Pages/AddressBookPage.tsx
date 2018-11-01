@@ -13,6 +13,7 @@ export interface IAddressBookPageRowProps {
   currentTransaction: Transaction;
   handleChangeContact: (id: string) => void;
   handleEditContact: (contact: Contact) => void;
+  handleDeleteContact: (contact: Contact) => void;
   handleSelectRow: (id: string, listType: ListType) => void;
   toggleContactFavorite?: (id: string) => void;
   user: IUser;
@@ -47,7 +48,7 @@ class AddressBookPage extends React.Component<WithStyles<any> & IAddressBookPage
   }
 
   public render() {
-    const { currentContact, currentTransaction, contacts, handleEditContact, handleSelectRow, user, transactions, toggleContactFavorite } = this.props;
+    const { currentContact, currentTransaction, contacts, handleEditContact, handleDeleteContact, handleSelectRow, user, transactions, toggleContactFavorite } = this.props;
     const txData = transactions.filter(tx => (tx.to === currentContact.address) || (tx.from === currentContact.address));
     return (
       <Aux>
@@ -57,6 +58,7 @@ class AddressBookPage extends React.Component<WithStyles<any> & IAddressBookPage
               contact={currentContact}
               toggleContactFavorite={toggleContactFavorite}
               handleEditContact={handleEditContact}
+              handleDeleteContact={handleDeleteContact}
             />
           }
         </Grid>

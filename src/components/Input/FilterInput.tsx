@@ -6,6 +6,7 @@ import { DataType, IFilter } from '../List/ListContainer';
 import StringFilterInput from './StringFilterInput';
 
 export interface IFilterInputProps {
+  applyFilters: (filter: IFilter, value: any) => void;
   filter: IFilter;
   data: ISelectOption[]
 }
@@ -30,8 +31,9 @@ class FilterInput extends React.Component<WithStyles<any> & IFilterInputProps, I
   }
 
   public handleChangeFilterValue = (value: any) => {
+    const { applyFilters, filter } = this.props;
     console.log(value);
-    this.setState({ filterValue: value });
+    this.setState({ filterValue: value }, () => applyFilters(filter, value));
   }
 
   public parseValue = (filterType: DataType, value: string | null) => {
@@ -80,10 +82,17 @@ class FilterInput extends React.Component<WithStyles<any> & IFilterInputProps, I
   }
 
   public buildTypedFilterInput = (inputValue: any, filterType: DataType, downshiftProps: any) => {
-    const { data } = this.props;
+    const { applyFilters, data } = this.props;
     switch (filterType) {
       case 'string':
-        return <StringFilterInput inputValue={inputValue} data={data} {...downshiftProps} />;
+        return (
+          <StringFilterInput
+            inputValue={inputValue}
+            applyFilters={applyFilters}
+            data={data}
+            {...downshiftProps}
+          />
+        );
       case 'number':
         return null;
         // return <NumberFilterInput inputValue={inputValue} data={data} {...downshiftProps} />;

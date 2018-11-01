@@ -19,6 +19,7 @@ export interface IMainContentProps {
   user: IUser;
   toggleContactFavorite: (id: string) => void;
   handleEditContact: (contact: Contact) => void;
+  handleDeleteContact: (contact: Contact) => void;
   handleSelectCurrency: (currencyCode: string) => void;
 }
 
@@ -81,7 +82,7 @@ class MainContent extends React.Component<WithStyles<any> & IMainContentProps, I
   }
 
   public render() {
-    const { contacts, handleEditContact, toggleContactFavorite, transactions, user } = this.props;
+    const { contacts, handleDeleteContact, handleEditContact, toggleContactFavorite, transactions, user } = this.props;
     const { currentContact, currentTransaction } = this.state;
     const contact = this.getTransactionContact();
     const homePage = () => {
@@ -108,6 +109,7 @@ class MainContent extends React.Component<WithStyles<any> & IMainContentProps, I
           contacts={contacts}
           transactions={transactions}
           handleEditContact={handleEditContact}
+          handleDeleteContact={handleDeleteContact}
           linkId={id}
         />
       )

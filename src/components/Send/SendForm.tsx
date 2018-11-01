@@ -20,7 +20,7 @@ import { Contact } from '../../classes/Contact';
 import { getFullName } from '../../helpers/utils';
 import { web3 } from '../../helpers/web3';
 import { IUser } from '../../interfaces/User';
-import ContactDetails from '../Contact/ContactDetails';
+import ContactView from '../Contact/ContactView';
 import { Aux } from '../winAux';
 
 // @ts-ignore
@@ -218,9 +218,7 @@ class SendForm extends React.Component<WithStyles<any> & ISendFormProps, ISendFo
             </Paper>
           </Grid>
           <Grid item={true} xs={6}>
-            <ContactDetails
-              contact={currentContact}
-            />
+            <ContactView contact={currentContact} />
           </Grid>
         </Grid>
       </Aux>
