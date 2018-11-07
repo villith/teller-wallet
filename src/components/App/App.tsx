@@ -1,5 +1,6 @@
 import { CircularProgress, Grid, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';;
 import * as dotenv from 'dotenv';
+import * as fs from 'fs';
 import { History, Location } from 'history';
 import * as React from 'react';
 import { match } from 'react-router';
@@ -14,8 +15,6 @@ import { IUser } from '../../interfaces/User';
 import MainContent from '../MainContent/MainContent';
 import NavBar from '../NavBar/NavBar';
 import SideMenu from '../SideMenu/SideMenu';
-
-const fs = window.require('fs');
 
 dotenv.config();
 

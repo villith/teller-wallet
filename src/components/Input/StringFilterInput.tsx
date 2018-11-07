@@ -35,7 +35,6 @@ class StringFilterInput extends React.Component<WithStyles<any> & IStringFilterI
   public render() {
     const { classes, data, getItemProps, highlightedIndex, selectedItem, inputValue } = this.props;
     const parsedInputValue = this.parseValue(inputValue);
-    console.log(data);
     return (
       data
         .filter((option) => {

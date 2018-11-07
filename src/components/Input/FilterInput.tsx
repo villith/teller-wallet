@@ -1,4 +1,14 @@
-import { FormControl, Input, InputLabel, Paper, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
+import {
+  FormControl,
+  Grid,
+  Input,
+  InputLabel,
+  Paper,
+  StyleRulesCallback,
+  Theme,
+  WithStyles,
+  withStyles,
+} from '@material-ui/core';
 import Downshift from 'downshift';
 import * as React from 'react';
 
@@ -21,7 +31,10 @@ export interface ISelectOption {
 }
 
 const styles: StyleRulesCallback<any> = (theme: Theme) => ({
-  root: {}
+  root: {},
+  formControl: {
+
+  }
 });
 
 class FilterInput extends React.Component<WithStyles<any> & IFilterInputProps, IFilterInputState> {
@@ -111,38 +124,40 @@ class FilterInput extends React.Component<WithStyles<any> & IFilterInputProps, I
     const { classes, filter } = this.props;
     const { key: filterKey, type: filterType } = filter;
     return (
-      <Downshift
-        id={`downshift-filter-${filter.key}`}
-        onChange={this.handleChangeFilterValue}
-        defaultInputValue={filterValue}
-      >
-        {({
-          getInputProps,
-          getItemProps,
-          getMenuProps,
-          highlightedIndex,
-          inputValue,
-          isOpen,
-          selectedItem,
-          setState
-        }) => {
-          return (
-            <div>
-              <FormControl margin='dense' className={classes.formControl}>
-                <InputLabel htmlFor={`filter-${filterKey}`}>{`${filterKey.charAt(0).toUpperCase()}${filter.key.substr(1)}`}</InputLabel>
-                <Input {...getInputProps()} />
-              </FormControl>
-              <div {...getMenuProps()}>
-                {isOpen && (
-                  <Paper className={classes.paper} elevation={4}>
-                    {this.buildTypedFilterInput(inputValue, filterType, { getItemProps, selectedItem, highlightedIndex })}
-                  </Paper>
-                )}
+      <Grid item={true} xs={6}>
+        <Downshift
+          id={`downshift-filter-${filter.key}`}
+          onChange={this.handleChangeFilterValue}
+          defaultInputValue={filterValue}
+        >
+          {({
+            getInputProps,
+            getItemProps,
+            getMenuProps,
+            highlightedIndex,
+            inputValue,
+            isOpen,
+            selectedItem,
+            setState
+          }) => {
+            return (
+              <div>
+                <FormControl margin='dense' className={classes.formControl}>
+                  <InputLabel htmlFor={`filter-${filterKey}`}>{`${filterKey.charAt(0).toUpperCase()}${filter.key.substr(1)}`}</InputLabel>
+                  <Input {...getInputProps()} />
+                </FormControl>
+                <div {...getMenuProps()}>
+                  {isOpen && (
+                    <Paper className={classes.paper} elevation={4}>
+                      {this.buildTypedFilterInput(inputValue, filterType, { getItemProps, selectedItem, highlightedIndex })}
+                    </Paper>
+                  )}
+                </div>
               </div>
-            </div>
-          )
-        }}
-      </Downshift>
+            )
+          }}
+        </Downshift>
+      </Grid>
     );
   }
 }

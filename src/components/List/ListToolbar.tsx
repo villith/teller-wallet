@@ -1,8 +1,8 @@
-import { IconButton, StyleRulesCallback, Theme, Toolbar, Typography, WithStyles, withStyles } from '@material-ui/core';
+import { Grid, IconButton, StyleRulesCallback, Theme, Toolbar, Typography, WithStyles, withStyles } from '@material-ui/core';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 import { FilterList as FilterListIcon } from '@material-ui/icons';
 import * as React from 'react';
-import { Contact } from 'src/classes/Contact';
+import { Contact, ContactFilterables } from 'src/classes/Contact';
 
 import { Transaction, TransactionFilterables } from '../../classes/Transaction';
 import FilterInput from '../Input/FilterInput';
@@ -83,8 +83,9 @@ class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, I
   }
 
   public buildFilterInputs = () => {
-    const { applyFilters, data, filters } = this.props;
-    return filters.filter(filter => filter.key in TransactionFilterables)
+    const { applyFilters, data, filters, listType } = this.props;
+    const filterables = listType === 'Transaction' ? TransactionFilterables : ContactFilterables;
+    return filters.filter(filter => filter.key in filterables)
       .map((filter, index) => {
         const uniqueMap: { [index: string]: boolean } = {};
         const filterableData = data.map(item => {
@@ -144,7 +145,10 @@ class ListToolbar extends React.Component<WithStyles<any> & IListToolbarProps, I
         </Toolbar>
         { filtersVisible &&
           <div className={classes.filters}>
-            {this.buildFilterInputs()}
+            <Typography variant='subheading'>Filters</Typography>
+            <Grid container={true} spacing={8}>
+              {this.buildFilterInputs()}
+            </Grid>
           </div>
         }
       </Aux>

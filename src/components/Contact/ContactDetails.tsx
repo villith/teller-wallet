@@ -121,6 +121,13 @@ class ContactDetails extends React.Component<WithStyles<any> & IContactDetailsPr
     }
   }
 
+  public handleChange = (event: any) => {
+    const { contact } = this.state;
+    const { id, value } = event.target;
+    contact[id] = value;
+    this.setState({ contact });
+  }
+
   public render() {
     const { editModeActive, contact: formContact } = this.state;
     const { classes, contact, deleteContact, handleEditContact, toggleContactFavorite } = this.props;
@@ -140,18 +147,21 @@ class ContactDetails extends React.Component<WithStyles<any> & IContactDetailsPr
                   value={formContact.title}
                   label='Title'
                   className={classes.textField}
+                  onChange={this.handleChange}
                 />
                 <TextField
                   id='firstName'
                   value={formContact.firstName}
                   label='First Name'
                   className={classes.textField}
+                  onChange={this.handleChange}
                 />
                 <TextField
                   id='lastName'
                   value={formContact.lastName}
                   label='Last Name'
                   className={classes.textField}
+                  onChange={this.handleChange}
                 />
               </div>
             ) : (
