@@ -11,14 +11,23 @@ let loading;
 
 const createWindow = () => {
     loading = new BrowserWindow({
+        center: true,
+        closable: false,
         frame: false,
+        frame: false,
+        fullscreenable: false,
         height: 300,
-        width: 200
+        maximizable: false,
+        minimizable: false,
+        movable: false,
+        resizable: false,
+        title: 'Teller Wallet Loading...',
+        width: 240,
     });
     // Create the browser window.
     mainWindow = new BrowserWindow({
         autoHideMenuBar: true,
-        frame: false,
+        frame: true,
         height: 800,
         minHeight: 800,
         minWidth: 1280,

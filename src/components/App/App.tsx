@@ -1,4 +1,4 @@
-import { CircularProgress, Grid, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';;
+import { CircularProgress, Grid, StyleRulesCallback, Theme, WithStyles, withStyles } from '@material-ui/core';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import { History, Location } from 'history';
@@ -15,6 +15,7 @@ import { IUser } from '../../interfaces/User';
 import MainContent from '../MainContent/MainContent';
 import NavBar from '../NavBar/NavBar';
 import SideMenu from '../SideMenu/SideMenu';
+import ToolbarContainer from '../Toolbar/ToolbarContainer';
 
 dotenv.config();
 
@@ -238,6 +239,7 @@ class App extends React.Component<WithStyles<any> & IAppProps, IAppState> {
     const { contacts, loading, settings, sideMenuOpen, transactions, user } = this.state;
     return (
       <div className={classes.root}>
+        <ToolbarContainer />
         <NavBar
           currencyCode={settings.currencyCode}
           handleSelectCurrency={this.handleSelectCurrency}
